@@ -1,0 +1,35 @@
+<!-- sldsValidatorIgnore -->
+<!-- sldsValidatorIgnore -->
+<!-- sldsValidatorIgnore -->
+
+<template>
+        <td class="fieldname">
+            <div class="name">{throwName}</div>
+            <div class="changedname" style="display:none;">{changedName}</div>
+            <input onblur={handleLoseNameFocus} onkeyup={handleEnter} class="inputfield" type="hidden">
+            <button onclick={handleEditName} class="editNameButton" name="edit" value="edit">
+                <img width="20" src="https://cdn.pixabay.com/photo/2017/06/06/00/33/edit-icon-2375785_1280.png" />
+            </button>
+        </td>
+        <td class="fieldrating">
+            <div class="rating">{trowRating}</div>
+            <div class="changedrating" style="display: none;"> {changedRating}</div>
+            <template if:true={editRatingButtonClicked}>
+                <select onkeyup={handleEnterRating} onblur={handleLoseRatingFocus} class="select">
+                    <option value="">--NONE--</option>
+                    <option value="Hot">Hot</option>
+                    <option value="Warm">Warm</option>
+                    <option value="Cold">Cold</option>
+                </select>
+            </template>
+            <button name="edit" value="edit" class="editRatingButton" onclick={handleEditRating}>
+                <img width="20" src="https://cdn.pixabay.com/photo/2017/06/06/00/33/edit-icon-2375785_1280.png" />
+            </button>
+        </td>
+        <td>
+            <div>
+                <lightning-button-icon onclick={handleDeleteRow} icon-name="utility:delete" alternative-text="Delete"
+                    title="Delete" data-acc-id={throwId} data-test="test"></lightning-button-icon>
+            </div>
+        </td>
+</template>

@@ -1,3 +1,4 @@
+
 <template>
     <table id="accounts" class="model_table">
         <thead>
@@ -6,5 +7,24 @@
             <th>Delete</th>
         </thead>
 
+        <tbody>
+            <template for:each={data} for:item="account">
+                <c-row key={account.Id} throw-id={account.Id} 
+                 throw-name={account.Name} throw-rating={account.Rating}>
+                </c-row>
+            </template>
+        </tbody>
     </table>
+
+    <template if:true={openFooter}>
+        <footer class="slds-modal__footer">
+            <button class="slds-button slds-button_neutral" onclick={handleCancel}>
+                Cancel
+            </button>
+            <button class="slds-button slds-button_brand" onclick={handleSave}>
+                Save
+            </button>
+        </footer>
+    </template>
+
 </template>
