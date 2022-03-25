@@ -1,7 +1,7 @@
 
 <template>
     <table id="accounts" class="model_table">
-        <thead style="background: rgb(50, 176, 214)">
+        <thead>
             <th>Name</th>
             <th>Rating</th>
             <th>Delete</th>
@@ -9,7 +9,9 @@
 
         <tbody>
             <template for:each={data} for:item="account">
-                <c-row key={account.Id} throw-id={account.Id} throw-name={account.Name} throw-rating={account.Rating}>
+                <c-row onrefreshtable={handleRefreshTable}
+                 
+                key={account.Id} throw-id={account.Id} throw-name={account.Name} throw-rating={account.Rating}>
                 </c-row>
             </template>
         </tbody>

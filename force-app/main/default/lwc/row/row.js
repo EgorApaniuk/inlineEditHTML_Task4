@@ -13,5 +13,22 @@ export default class Row extends LightningElement {
     @api changedRating;
     @api editRatingButtonClicked = false;
     
+    refreshTable(){
+        const updateEvent = new CustomEvent("refreshtable");
+        this.dispatchEvent(updateEvent);
+    }
+    handleDeleteRow(event){
+
+        deleteAccount({accountId: event.target.dataset.accId}).then(() => {
+            this.refreshTable();
+        })
+    }
+
+    handleEditRating(){
+        this.editRatingButtonClicked = true;// включает выплывающую менюшку
+        console.log("edit Rating button activated");
+        // this.unableButtonsMessage();
+        // this.hideStartRating();
+    }
     
 }
