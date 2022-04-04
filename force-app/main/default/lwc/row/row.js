@@ -21,6 +21,13 @@ export default class Row extends LightningElement {
     // @api nameValueBeforePreviousEdit;   //полей, чтобы в случае CANCEL вернуться к ним
 
 
+    renderedCallback() {    // для того, чтобы нынешний рейтинг передавался в select(dropbar)
+        // if (this.template.querySelector('.select')){
+        //     this.template.querySelector('.select').value = this.throwRating;
+        // }
+        this.template.querySelector('.select') ? this.template.querySelector('.select').value = this.throwRating : null;
+    }
+
     // U N A B L E / E N A B L E
     unableButtonsMessage() {
         const unableButtonsEvent = new CustomEvent("unablebuttonsevent");
@@ -43,7 +50,7 @@ export default class Row extends LightningElement {
         let editNameButton = this.template.querySelector('.editNameButton');
         let editRatingButton = this.template.querySelector('.editRatingButton');
         editNameButton.removeAttribute('disabled');
-        editRatingButton.removeAttribute('disabled');
+        editRatingButton.removeAttribute('disabled');//почему то в конкретной кнопке дизэйблд не снимается
     }
 
     refreshTable() {
@@ -124,52 +131,62 @@ export default class Row extends LightningElement {
     // --  --
 
     // R A T I N G
-    handleEditRating() {
+    handleEditRating() { //1 
         
         this.RatingValueToTemproraryVar(); //запись Rating в темпвар
         this.unableButtonsMessage();
-        this.hideStartRating();
+        this.hideRating();
         this.showRatingSelect();
 
     }
+    
+    RatingValueToTemproraryVar() {  //2
+        if (this.tempVarRating === false) {
+            if(this.throwRating === undefined){// нужно передать в tempRating именно пустую строку
+                this.tempVarRating = "";       // иначе checkRatingChanges сравнивает undefined и "". 
+            }
+            else{
+                this.tempVarRating = this.throwRating;
+            }
+            
+            console.log("ratingToTempVar IF momento tempvar is |" + this.tempVarRating);
+        }
+        else {
+            console.log("ratingToTempVar ELSE momento 1 tempvar is | " + this.tempVarRating);
+            
+            this.tempVarRating = this.template.querySelector(".rating").value; //ПОМЕНЯТЬ!!!! //поменял
+            console.log("ratingToTempVar ELSE momento 2 tempvar is | "+ this.tempVarRating);
+            
+        }
+    }
+
+    hideRating() {     //спрятать Изначальный рейтинг // 4
+        let text = this.template.querySelector(".rating");
+        text.style.display = "none";     
+        
+    }
+
     showRatingSelect() {
         this.editRatingButtonClicked = true; //вызывает рендер селекта
     }
 
-    RatingValueToTemproraryVar() {
-        if (this.tempVarRating === false) {
-            this.tempVarRating = this.throwRating;
-            console.log("temp var filled w/ " + this.tempVarRating);
-        }
-        else {
-            this.ratingValueBeforePreviousEdit = this.template.querySelector(".changedrating").value;
-            console.log("temp var filled w/ " + this.tempVarRating);
-        }
-    }
-
-    hideStartRating() {     //спрятать Изначальный рейтинг
-        let text = this.template.querySelector(".rating");
-        text.style.display = "none";     // чтобы спрятать
-        let changedtext = this.template.querySelector(".changedrating");
-        changedtext.style.display = "none";
-    }
-
     handleLoseRatingFocus() {//обработчик клика в пустое место от рейтинга
-        console.log("focus on rating lost");
+        console.log("focus on rating select lost");
         this.hideRatingSelect();
     }
     hideRatingSelect() {     //спрятать droplist или Select
-        console.log("hide select rating");
         this.checkRatingChanges();
         this.editRatingButtonClicked = false;
     }
-    checkRatingChanges() {   //проверить изменение рейтинга
-        // console.log(this.tempVarRating);
-        if (this.template.querySelector('.select').value != this.throwRating) {
-            // console.log('there are changes in Rating');
+    checkRatingChanges() {   //проверить изменение рейтинга 
+        console.log("checkRate momento Select value is");
+        console.log(this.template.querySelector('.select').value);
+        console.log("checkRate momento tempVar is");
+        console.log(this.tempVarRating);
+        if (this.template.querySelector('.select').value != this.tempVarRating) {
+            console.log('there are changes in Rating');
 
             this.template.querySelector('.rating').value = this.template.querySelector('.select').value
-            this.ratingChanges = true; //переменная чтобы в последующем плясать от неё, обрабатывая изменеия в имени
 
             this.changeBackgroundColor();
             this.showChangedRating();
@@ -177,18 +194,17 @@ export default class Row extends LightningElement {
         }
         else {
             this.showRatingText();
-            // console.log('there are  NOOOO changes in Rating'); //меняю рейтинг с none на none срабатывает не элсе втф
+            console.log('there are  NOOOO changes in Rating');
 
         }
     }
     changeBackgroundColor() {// метод красит ячейку в желтый
         if (this.editRatingButtonClicked) {
-            // console.log("красим рейтинг");
+            // красим рейтинг 
             this.template.querySelector(".fieldrating").classList.toggle("input-changed", false);
             this.template.querySelector(".fieldrating").classList.toggle("yellow-cell", true);
         }
-        else {
-            // console.log("красим имя");
+        else {// красим имя
             this.template.querySelector(".fieldname").classList.toggle("input-changed", false);
             this.template.querySelector(".fieldname").classList.toggle("yellow-cell", true);
         }
@@ -201,7 +217,7 @@ export default class Row extends LightningElement {
     showRatingText() {   //показать неизмененный рейтинг
         let text = this.template.querySelector(".rating");
         text.style.display = "block";
-        this.enableButtonsMessage();
+        this.enableButtonsMessage(); // не работает кнопка возле непосредсвенно (не)изменённого рейтинга
     }
     // --  --
 
