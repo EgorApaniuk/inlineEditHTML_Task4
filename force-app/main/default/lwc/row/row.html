@@ -12,10 +12,9 @@
         </button>
     </td>
     <td class="fieldrating">
-        <div class="rating">{throwRating}</div>
-
-        <!-- <div class="changedrating" style="display:none;">{changedRating}</div> -->
-
+        <template if:false={editRatingButtonClicked}>
+            <div class="rating">{throwRating}</div></template>
+            
         <template if:true={editRatingButtonClicked}>
             <select onkeyup={handleEnterRating} onblur={handleLoseRatingFocus} class="select">
                 <option value="">--None--</option>

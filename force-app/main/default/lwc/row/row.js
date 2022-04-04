@@ -17,15 +17,16 @@ export default class Row extends LightningElement {
     @api changedRating;
     @api editRatingButtonClicked = false;
 
-    tempVarRating = false; //эти переменные являются временным хранилищем значений + по дефолту хай будет равно рейтингу
+    @api tempVarRating = false; //эти переменные являются временным хранилищем значений + по дефолту хай будет равно рейтингу
     // @api nameValueBeforePreviousEdit;   //полей, чтобы в случае CANCEL вернуться к ним
-
+    yaDebil;
 
     renderedCallback() {    // для того, чтобы нынешний рейтинг передавался в select(dropbar)
         // if (this.template.querySelector('.select')){
         //     this.template.querySelector('.select').value = this.throwRating;
         // }
         this.template.querySelector('.select') ? this.template.querySelector('.select').value = this.throwRating : null;
+
     }
 
     // U N A B L E / E N A B L E
@@ -130,107 +131,49 @@ export default class Row extends LightningElement {
     }
     // --  --
 
-    // R A T I N G
-    handleEditRating() { //1 
-        
-        this.RatingValueToTemproraryVar(); //запись Rating в темпвар
+    // R A T I N G // 
+    handleEditRating() {     
+        this.throwRating === undefined ? this.tempVarRating = "" : this.tempVarRating = this.throwRating; // rewriting in tempVar every time edit button pushed 
+        //записываем свежее значение в tempVar при каждом нажатии на edit
+        this.editRatingButtonClicked = true; // show rating select, hide rating text
         this.unableButtonsMessage();
-        this.hideRating();
-        this.showRatingSelect();
-
     }
     
-    RatingValueToTemproraryVar() {  //2
-        if (this.tempVarRating === false) {
-            if(this.throwRating === undefined){// нужно передать в tempRating именно пустую строку
-                this.tempVarRating = "";       // иначе checkRatingChanges сравнивает undefined и "". 
-            }
-            else{
-                this.tempVarRating = this.throwRating;
-            }
-            
-            console.log("ratingToTempVar IF momento tempvar is |" + this.tempVarRating);
-        }
-        else {
-            console.log("ratingToTempVar ELSE momento 1 tempvar is | " + this.tempVarRating);
-            
-            this.tempVarRating = this.template.querySelector(".rating").value; //ПОМЕНЯТЬ!!!! //поменял
-            console.log("ratingToTempVar ELSE momento 2 tempvar is | "+ this.tempVarRating);
-            
-        }
-    }
-
-    hideRating() {     //спрятать Изначальный рейтинг // 4
-        let text = this.template.querySelector(".rating");
-        text.style.display = "none";     
-        
-    }
-
-    showRatingSelect() {
-        this.editRatingButtonClicked = true; //вызывает рендер селекта
-    }
-
-    handleLoseRatingFocus() {//обработчик клика в пустое место от рейтинга
-        console.log("focus on rating select lost");
-        this.hideRatingSelect();
-    }
-    hideRatingSelect() {     //спрятать droplist или Select
-        this.checkRatingChanges();
-        this.editRatingButtonClicked = false;
-    }
-    checkRatingChanges() {   //проверить изменение рейтинга 
-        console.log("checkRate momento Select value is");
-        console.log(this.template.querySelector('.select').value);
-        console.log("checkRate momento tempVar is");
-        console.log(this.tempVarRating);
-        if (this.template.querySelector('.select').value != this.tempVarRating) {
-            console.log('there are changes in Rating');
-
-            this.template.querySelector('.rating').value = this.template.querySelector('.select').value
-
-            this.changeBackgroundColor();
-            this.showChangedRating();
+    handleLoseRatingFocus() {   //обработчик клика в пустое место от рейтинга
+        //checking Rating Changes below (checkRatingChanges())
+        if (this.template.querySelector('.select').value != this.tempVarRating) {   //изменения ЕСТЬ
+            this.throwRating = this.template.querySelector('.select').value;
+            this.changeBackgroundColor(); 
+            this.editRatingButtonClicked = false;  // hide rating select, show rating text
             this.openFooterMessage()
         }
-        else {
-            this.showRatingText();
-            console.log('there are  NOOOO changes in Rating');
-
+        else {                                                                      //изменений НЕТ
+            this.editRatingButtonClicked = false;  // hide rating select, show rating text
+            this.enableButtonsMessage();
         }
     }
-    changeBackgroundColor() {// метод красит ячейку в желтый
+
+    changeBackgroundColor() {
         if (this.editRatingButtonClicked) {
-            // красим рейтинг 
-            this.template.querySelector(".fieldrating").classList.toggle("input-changed", false);
+            this.template.querySelector(".fieldrating").classList.toggle("input-changed", false);   // красим рейтинг 
             this.template.querySelector(".fieldrating").classList.toggle("yellow-cell", true);
         }
-        else {// красим имя
-            this.template.querySelector(".fieldname").classList.toggle("input-changed", false);
+        else {
+            this.template.querySelector(".fieldname").classList.toggle("input-changed", false);     // красим имя
             this.template.querySelector(".fieldname").classList.toggle("yellow-cell", true);
         }
     }
-    showChangedRating() {
-        this.changedRating = this.template.querySelector('.select').value;
-        let text = this.template.querySelector(".changedrating");
-        text.style.display = "block";
-    }
-    showRatingText() {   //показать неизмененный рейтинг
-        let text = this.template.querySelector(".rating");
-        text.style.display = "block";
-        this.enableButtonsMessage(); // не работает кнопка возле непосредсвенно (не)изменённого рейтинга
-    }
-    // --  --
+    // R A T I N G //
 
-    // F O O T E R 
+    // F O O T E R //
     openFooterMessage() {
         const openFooterEvent = new CustomEvent("openfootermessage");
-        // console.log("open footer event done");
         this.dispatchEvent(openFooterEvent);
     }
-    //
+    // F O O T E R //
 
-    // F O O T E R  C A N C E L
-    @api cancel() { //главное откатывать изменения до предыдущих значений, а не до стартовых - не потеряй это
+    // F O O T E R  C A N C E L //
+    @api cancel() {
         this.cancelChanges();
         this.changeBackgroundColorToDefault();
         this.enableButtonsMessage();
@@ -242,38 +185,14 @@ export default class Row extends LightningElement {
         });
         this.dispatchEvent(toastMessage);
     }
+
     cancelChanges() {
-        this.hideChangedFields();
-        this.showNameText();
-        this.showRatingText(); // вывод ПРЕДЫДУЩИХ а НЕ стартовых значений окда?
+        this.throwRating = this.tempVarRating;
+        
+        // this.showNameText(); //чё это? пускай будет пока с текстом не разберусь.
     }
 
-    hideChangedFields() {
-        let rating = this.template.querySelector(".changedrating");
-        console.log("hide changed rating");
-        rating.style.display = "none";
 
-        let name = this.template.querySelector(".changedname");
-        console.log("hide changed name");
-        name.style.display = "none";
-    }
-    showPreviousFields() {
-        //показать неизмененный рейтинг
-        // let rating = this.ratingValueBeforePreviousEdit // right?  // = this.template.querySelector(".rating");
-        // rating.style.display = "block";
-
-        let text = this.template.querySelector(".name");
-        //   text.style.display = ""; //- чтобы показать текст
-        // console.log ("show name");
-        text.style.display = "block";
-        this.enableButtonsMessage();
-
-
-        // let name = this.template.querySelector(".name");
-        // name.style.display = "block";
-        // this.enableButtonsMessage();
-
-    }
     changeBackgroundColorToDefault() {
         this.template.querySelector(".fieldrating").classList.toggle("input-changed", true);
         this.template.querySelector(".fieldname").classList.toggle("input-changed", true);
