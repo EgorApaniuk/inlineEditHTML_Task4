@@ -19,7 +19,10 @@ export default class TableInlineEditHTML extends LightningElement {
             console.log("data is true");
 
             this.data=data;
+            console.log(this.account);
             this.account=data[0];// chto eto za stroka i zachem ona nuzna?
+            console.log(this.account);
+            
             // chudotvornaya stroka delaet tak, chto rating stanovistya visible
         }
         else if (error){
@@ -27,7 +30,7 @@ export default class TableInlineEditHTML extends LightningElement {
         }
     }
 
-    handleRefreshTable(){
+    handleRefreshTable(){ // for immidiate table refresh after deleting row
         refreshApex(this.refreshAccounts);
     }
 

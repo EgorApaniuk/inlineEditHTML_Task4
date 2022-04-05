@@ -25,7 +25,7 @@ export default class Row extends LightningElement {
         //     this.template.querySelector('.select').value = this.throwRating;
         // }
         this.template.querySelector('.select') ? this.template.querySelector('.select').value = this.throwRating : null;
-
+        // console.log("renderedCallback srabotal");
     }
 
     // U N A B L E / E N A B L E
