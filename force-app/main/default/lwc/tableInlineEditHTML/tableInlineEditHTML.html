@@ -20,13 +20,9 @@
     </table>
 
     <template if:true={openFooter}>
-        <footer class="slds-modal__footer">
-            <button class="slds-button slds-button_neutral" onclick={handleCancel}>
-                Cancel
-            </button>
-            <button class="slds-button slds-button_brand" onclick={handleSave}>
-                Save
-            </button>
-        </footer>
+       <c-footer-inline-edit 
+       onsaveevent={handleSave}
+       oncancelevent={handleCancel}>
+       </c-footer-inline-edit>
     </template>
 </template>

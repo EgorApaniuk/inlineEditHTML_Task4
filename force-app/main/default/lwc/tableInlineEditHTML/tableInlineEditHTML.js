@@ -53,19 +53,24 @@ export default class TableInlineEditHTML extends LightningElement {
     handleSave(){
         
         console.log("save pushed");
-        let allRows = this.template.querySelectorAll("c-row");
-        allRows.forEach(function(item, i, allRows){
-            item.save();
-        });    
+        // let allRows = this.template.querySelectorAll("c-row");
+        // allRows.forEach(function(item, i, allRows){
+        //     item.save();
+        // });    
         this.openFooter = false;
     }
     handleCancel(){
         console.log("cancel pushed");
-        let allRows = this.template.querySelectorAll("c-row");
-        allRows.forEach(function(item, i, allRows){
-            item.cancel();
-        });
-        this.openFooter = false; // закрываем футер прямо тут, не думаю что это сильно плохо¯\_(ツ)_/¯ 
-    } //или надо создать функцию для этого? Подумай об этом потом.¯\_(ツ)_/¯  
+        // let allRows = this.template.querySelectorAll("c-row");
+        // allRows.forEach(function(item, i, allRows){
+        //     item.cancel();
+        // });
 
+
+        // my variant 
+        let row = this.template.querySelector("c-row");
+        console.log("row:", row);
+        row.cancel();
+        this.openFooter = false;
+    } 
 }

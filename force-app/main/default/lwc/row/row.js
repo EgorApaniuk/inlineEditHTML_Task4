@@ -18,8 +18,7 @@ export default class Row extends LightningElement {
     @api editRatingButtonClicked = false;
 
     @api tempVarRating = false; //эти переменные являются временным хранилищем значений + по дефолту хай будет равно рейтингу
-    // @api nameValueBeforePreviousEdit;   //полей, чтобы в случае CANCEL вернуться к ним
-    yaDebil;
+    // @api tempVarName;   //полей, чтобы в случае CANCEL вернуться к ним
 
     renderedCallback() {    // для того, чтобы нынешний рейтинг передавался в select(dropbar)
         // if (this.template.querySelector('.select')){
@@ -133,8 +132,11 @@ export default class Row extends LightningElement {
 
     // R A T I N G // 
     handleEditRating() {     
+        console.log("edit clicked, tempvar before = " + this.tempVarRating);
         this.throwRating === undefined ? this.tempVarRating = "" : this.tempVarRating = this.throwRating; // rewriting in tempVar every time edit button pushed 
         //записываем свежее значение в tempVar при каждом нажатии на edit
+        console.log("edit clicked, tempvar after = " + this.tempVarRating);
+
         this.editRatingButtonClicked = true; // show rating select, hide rating text
         this.unableButtonsMessage();
     }
@@ -174,7 +176,11 @@ export default class Row extends LightningElement {
 
     // F O O T E R  C A N C E L //
     @api cancel() {
-        this.cancelChanges();
+        console.log("TempVar value = " + this.tempVarRating);
+        console.log("throwRating value before cancel = " + this.throwRating);
+        
+        this.throwRating = this.tempVarRating; // setup previous values
+
         this.changeBackgroundColorToDefault();
         this.enableButtonsMessage();
 
@@ -185,13 +191,6 @@ export default class Row extends LightningElement {
         });
         this.dispatchEvent(toastMessage);
     }
-
-    cancelChanges() {
-        this.throwRating = this.tempVarRating;
-        
-        // this.showNameText(); //чё это? пускай будет пока с текстом не разберусь.
-    }
-
 
     changeBackgroundColorToDefault() {
         this.template.querySelector(".fieldrating").classList.toggle("input-changed", true);
