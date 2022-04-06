@@ -12,6 +12,7 @@ export default class TableInlineEditHTML extends LightningElement {
     refreshAccounts;
     draftValues;
     receivedId; // poka testiruem
+    indexVar;
 
     @wire (getAccounts)
     wiredAccounts(value){
@@ -58,46 +59,47 @@ export default class TableInlineEditHTML extends LightningElement {
     
 
     draftValuesToVar(event){
-        console.log("Table gets this draftvalues : "+event.detail); 
-        this.draftValues = event.detail;
-
+        this.draftValues = event.detail.changeValue;
+        this.receivedId = event.detail.id;
+        console.log("получена айди : "+this.receivedId);
+        console.log("получено драфт значение :"+this.draftValues);
+        this.indexFind();
+        console.log("indexVar : "+indexVar);
         if(this.template.querySelector('c-row').editRatingButtonClicked == true){ 
-            console.log("checking changes in rating");
             this.checkRating(); //checking changes in rating
         }
         else{
-            console.log("checking changes in name");
             this.checkName();   //checking changes in name // инфа от кэпа 
         }
 
     }
 
     checkName(){
-        console.log("account.Name = "+this.account.Name);
-        if(this.draftValues != this.account.Name){
-            console.log("There are changes in NAME");
-            this.template.querySelector('c-row').carryChangesInNameCell();
-        }
-        else{
-            console.log("NO changes in NAME");
-            this.template.querySelector('c-row').editNameButtonClicked = false;
-            this.handleEnableButtons(); 
-        }
+        console.log("check name");
+        // if(this.draftValues != this.account.Name){
+        //     console.log("There are changes in NAME");
+        //     this.template.querySelector('c-row').carryChangesInNameCell();
+        // }
+        // else{
+        //     console.log("NO changes in NAME");
+        //     this.template.querySelector('c-row').editNameButtonClicked = false;
+        //     this.handleEnableButtons(); 
+        // }
     }// в этой ситуации чек нейм символ в символ повторяет чекрэйтинг, возможно надо что-то с жтим делать)))) ayy lmao
 
     checkRating(){
-        console.log(this.account.Rating);
-        if(this.draftValues != this.account.Rating){
-            console.log("there are changes in rating");  
+        console.log("check rating");
+        // if(this.draftValues != this.account.Rating){
+        //     console.log("there are changes in rating");  
 
-            this.template.querySelector('c-row').carryChangesInRatingCell();  
-        }
-        else{
-            console.log("NO changes in rating");
+        //     this.template.querySelector('c-row').carryChangesInRatingCell();  
+        // }
+        // else{
+        //     console.log("NO changes in rating");
 
-            this.template.querySelector('c-row').editRatingButtonClicked = false;// hide rating select, show rating text
-            this.handleEnableButtons(); 
-        }
+        //     this.template.querySelector('c-row').editRatingButtonClicked = false;// hide rating select, show rating text
+        //     this.handleEnableButtons(); 
+        // }
     }
 
     processingDraftValues(event){
@@ -148,34 +150,47 @@ export default class TableInlineEditHTML extends LightningElement {
 
     }
 
-    receiveId(event){
-        this.receivedId = event.detail;
-        console.log("receivedId = "+ this.receivedId);
-    }
+    // receiveId(event){
+        // this.receivedId = event.detail;
+        // console.log("receivedId = "+ this.receivedId);
+    // }
 
     handleTest(){
-        console.log("test test test");
-        // console.log(this.receivedId);
-        console.log(this.dataArray);
-        console.log(this.dataArray[1]);
-        console.log(this.dataArray[1].Id);
-
-        this.indexFind();
-
-    }
-
-
-
-    indexFind(){
-        console.log("indexFind started");
-        let index = this.dataArray.findIndex(this.checkArray);
-        console.log("index = "+ index);
-        console.log(this.dataArray[index]);
-        console.log("YEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEAAAAAAAAAAAAAAAAAAAAAAAAAAH");
+        // console.log("test test test");
+        // // console.log(this.receivedId);
+        // console.log(this.dataArray);
         
+
+        // this.indexFind();
+
     }
 
-    checkArray(array){
-        return array.Id ==  "0015g00000PkShVAAV";
-    }
+    // indexFind(){
+    //     console.log("indexFind started");
+    //     console.log(this.receivedId);
+        
+    //     let index = this.dataArray.findIndex(this.checkArray);
+
+    //     console.log("index = "+ index);
+    //     console.log(this.dataArray[index]);        
+    // }
+
+    // checkArray(array){
+
+    //     return array.Id == this.receivedId;
+    //     //for example "0015g00000PkShfAAF"
+    // }
+    indexFind(){
+            console.log("indexFind started");
+            console.log(this.receivedId);
+        
+            
+            let index = this.dataArray.findIndex((array) => {
+                return array.Id == this.receivedId;
+            });
+            console.log("index = "+ index);
+            console.log(this.dataArray[index]); 
+
+            this.indexVar  = index;
+        }
 }

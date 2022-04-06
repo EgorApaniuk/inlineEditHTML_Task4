@@ -52,7 +52,7 @@ export default class Row extends LightningElement {
         let editNameButton = this.template.querySelector('.editNameButton');
         let editRatingButton = this.template.querySelector('.editRatingButton');
         editNameButton.removeAttribute('disabled');
-        editRatingButton.removeAttribute('disabled');//почему то в конкретной кнопке дизэйблд не снимается
+        editRatingButton.removeAttribute('disabled');
     }
 
     refreshTable() {
@@ -73,19 +73,11 @@ export default class Row extends LightningElement {
     handleEditName() {
         console.log("current id : "+this.throwId);
         console.log("current name: "+this.throwName);
-        this.passIdMessage();
         this.editNameButtonClicked = true; // show Name input, hide Name text
         this.unableButtonsMessage();
     }
     
-    passIdMessage(){
-        let id = this.throwId;
-        const passId = new CustomEvent("passid", {
-            detail: id
-        });
-        this.dispatchEvent(passId);
-    }
-
+    
     handleLoseNameFocus() {  //обработчик клика в пустое место от имени
         console.log("Name input focus lost ayy");
         this.nameFocusLostMessage();
@@ -93,8 +85,9 @@ export default class Row extends LightningElement {
     
     nameFocusLostMessage(){
         let changeValue = this.template.querySelector('.inputfield').value;
+        let id = this.throwId;
         const nameFocusLost = new CustomEvent("namefocuslost", {
-            detail: changeValue
+            detail: {changeValue, id}
         }) ;
         this.dispatchEvent(nameFocusLost);
     }
@@ -102,10 +95,11 @@ export default class Row extends LightningElement {
     @api carryChangesInNameCell(){
         this.throwName = this.template.querySelector('.inputfield').value;
         this.changeBackgroundColor();
-        this.editNameButtonClicked = false;
+        this.editNameButtonClicked = false; // hide Name input, show Name text
         this.openFooterMessage();
     }
     // --  --
+
 
     // R A T I N G //
     handleEditRating() {     
@@ -115,17 +109,19 @@ export default class Row extends LightningElement {
     
     handleLoseRatingFocus() {   //обработчик клика в пустое место от рейтинга
         console.log("focus lost");
-        this.focusLostMessage();
+        this.ratingFocusLostMessage();
     }
 
-    focusLostMessage(){ // передаём значение изменения
-        let changeValue = this.template.querySelector('.select').value;
+    ratingFocusLostMessage(){ // передаём значение изменения
+        let changedValue = this.template.querySelector('.select').value;
+        let id = this.throwId;
         const ratingFocusLost = new CustomEvent("ratingfocuslost", {
-            detail: changeValue
+            detail: {changedValue, id}
         });
         this.dispatchEvent(ratingFocusLost);
     }
 
+       
     @api carryChangesInRatingCell(){
         this.throwRating = this.template.querySelector('.select').value;
             this.changeBackgroundColor(); 
