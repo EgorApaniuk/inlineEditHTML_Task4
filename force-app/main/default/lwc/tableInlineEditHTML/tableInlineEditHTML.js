@@ -8,9 +8,10 @@ import { refreshApex } from '@salesforce/apex';
 export default class TableInlineEditHTML extends LightningElement {
     openFooter = false;
     @track data;
+    dataArray;
     refreshAccounts;
     draftValues;
- 
+    receivedId; // poka testiruem
 
     @wire (getAccounts)
     wiredAccounts(value){
@@ -21,10 +22,8 @@ export default class TableInlineEditHTML extends LightningElement {
             console.log("data is true");
 
             this.data=data;
-            console.log(this.account);
-            this.account=data[0];// chto eto za stroka i zachem ona nuzna?
-            console.log(this.account);
-            
+            this.dataArray = data;
+            // this.account=data[0];// chto eto za stroka i zachem ona nuzna?
             // chudotvornaya stroka delaet tak, chto rating stanovistya visible
         }
         else if (error){
@@ -56,19 +55,35 @@ export default class TableInlineEditHTML extends LightningElement {
     
     
 
-    handleSave(){    
-        console.log("save pushed");
-        this.openFooter = false;
-    }
-
+    
 
     draftValuesToVar(event){
         console.log("Table gets this draftvalues : "+event.detail); 
         this.draftValues = event.detail;
 
-        //iniciiruem proverku
-        this.checkRating();
+        if(this.template.querySelector('c-row').editRatingButtonClicked == true){ 
+            console.log("checking changes in rating");
+            this.checkRating(); //checking changes in rating
+        }
+        else{
+            console.log("checking changes in name");
+            this.checkName();   //checking changes in name // инфа от кэпа 
+        }
+
     }
+
+    checkName(){
+        console.log("account.Name = "+this.account.Name);
+        if(this.draftValues != this.account.Name){
+            console.log("There are changes in NAME");
+            this.template.querySelector('c-row').carryChangesInNameCell();
+        }
+        else{
+            console.log("NO changes in NAME");
+            this.template.querySelector('c-row').editNameButtonClicked = false;
+            this.handleEnableButtons(); 
+        }
+    }// в этой ситуации чек нейм символ в символ повторяет чекрэйтинг, возможно надо что-то с жтим делать)))) ayy lmao
 
     checkRating(){
         console.log(this.account.Rating);
@@ -80,9 +95,7 @@ export default class TableInlineEditHTML extends LightningElement {
         else{
             console.log("NO changes in rating");
 
-            this.template.querySelector('c-row').editRatingButtonClicked = false;
-            console.log("editRatingButtonClicked = false now");
-            // hide rating select, show rating text
+            this.template.querySelector('c-row').editRatingButtonClicked = false;// hide rating select, show rating text
             this.handleEnableButtons(); 
         }
     }
@@ -117,9 +130,52 @@ export default class TableInlineEditHTML extends LightningElement {
     }
 
 
+
+
+    
     handleCancel(){
         console.log("cancel pushed");
+        this.openFooter = false;
+        this.handleEnableButtons();
         this.draftValuesStorage = [];
         this.draftValues = [];
     } 
+
+    handleSave(){    
+        console.log("save pushed");
+        this.openFooter = false;
+        this.handleEnableButtons();
+
+    }
+
+    receiveId(event){
+        this.receivedId = event.detail;
+        console.log("receivedId = "+ this.receivedId);
+    }
+
+    handleTest(){
+        console.log("test test test");
+        // console.log(this.receivedId);
+        console.log(this.dataArray);
+        console.log(this.dataArray[1]);
+        console.log(this.dataArray[1].Id);
+
+        this.indexFind();
+
+    }
+
+
+
+    indexFind(){
+        console.log("indexFind started");
+        let index = this.dataArray.findIndex(this.checkArray);
+        console.log("index = "+ index);
+        console.log(this.dataArray[index]);
+        console.log("YEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEAAAAAAAAAAAAAAAAAAAAAAAAAAH");
+        
+    }
+
+    checkArray(array){
+        return array.Id ==  "0015g00000PkShVAAV";
+    }
 }

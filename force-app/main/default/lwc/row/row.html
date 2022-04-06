@@ -2,9 +2,14 @@
 <template>
 
     <td class="fieldname">
-        <div class="name">{throwName}
-        </div>
-        <input onblur={handleLoseNameFocus} onkeyup={handleEnter} class="inputfield" type="hidden" size="auto">
+        <template if:false={editNameButtonClicked}>
+            <div class="name">{throwName}</div>
+        </template>
+
+        <template if:true={editNameButtonClicked}>
+            <input onblur={handleLoseNameFocus} onkeyup={handleEnter} class="inputfield" type="text" size="auto">
+        </template>
+        
         <button onclick={handleEditName} class="editNameButton" name="edit" value="edit">
             <img width="20" src="https://cdn.pixabay.com/photo/2017/06/06/00/33/edit-icon-2375785_1280.png" />
         </button>
@@ -14,7 +19,7 @@
     <td class="fieldrating">
         <template if:false={editRatingButtonClicked}>
             <div class="rating">{throwRating}</div>
-            
+
         </template>
 
         <template if:true={editRatingButtonClicked}>
@@ -28,7 +33,7 @@
 
         <button name="edit" value="edit" class="editRatingButton" onclick={handleEditRating}>
             <img width="20" src="https://cdn.pixabay.com/photo/2017/06/06/00/33/edit-icon-2375785_1280.png" />
-        </button> 
+        </button>
         <!-- display none -->
     </td>
 

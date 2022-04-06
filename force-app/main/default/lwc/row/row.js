@@ -16,6 +16,7 @@ export default class Row extends LightningElement {
     @api changedName;
     @api changedRating;
     @api editRatingButtonClicked = false;
+    @api editNameButtonClicked = false; 
 
     @api tempVarRating = false; //эти переменные являются временным хранилищем значений + по дефолту хай будет равно рейтингу
     // @api tempVarName;   //полей, чтобы в случае CANCEL вернуться к ним
@@ -25,6 +26,7 @@ export default class Row extends LightningElement {
         //     this.template.querySelector('.select').value = this.throwRating;
         // }
         this.template.querySelector('.select') ? this.template.querySelector('.select').value = this.throwRating : null;
+        this.template.querySelector('.inputfield') ? this.template.querySelector('.inputfield').value = this.throwName : null;
         // console.log("renderedCallback srabotal");
     }
 
@@ -69,64 +71,39 @@ export default class Row extends LightningElement {
 
     // N A M E 
     handleEditName() {
+        console.log("current id : "+this.throwId);
+        console.log("current name: "+this.throwName);
+        this.passIdMessage();
+        this.editNameButtonClicked = true; // show Name input, hide Name text
         this.unableButtonsMessage();
-        this.hideStartName();
-        this.showInputField();
-    }
-    hideStartName(){
-        let text = this.template.querySelector(".name");
-        text.style.display = "none";    
-        let changedText = this.template.querySelector(".changedname");
-        changedText.style.display = "none";
-    }
-    showInputField() {// что-то тут надо переделывать
-        this.template.querySelector('.inputfield').type = 'text';//меняем тип инпутфилда с hidden на текст
-        if (this.nameChanges != true) {// если изменения не были внесены - в инпутфилде высветиться дефолтное значение
-            this.template.querySelector('.inputfield').value = this.throwName;
-            console.log("eto skazka, tak ne bivaet");
-        }
-        else {console.log("dddddddddddddddddddddddd") // если изменения были внесены - в инпутфилде высветиться измененное значение
-            this.template.querySelector('.inputfield').value = this.querySelector('.name').value
-        }
-    }
-    handleLoseNameFocus() {  //обработчик клика в пустое место от имени
-        this.hideInputField();
-    }
-    hideInputField() {   //спрятать поле ввода имени
-        this.template.querySelector('.inputfield').type = 'hidden';
-        this.checkNameChanges();
     }
     
-    checkNameChanges(event) {
-        if (this.template.querySelector('.inputfield').value != this.throwName) { // элегантно))
-            // console.log('there are changes');
-            // кастыль
-            this.template.querySelector('.name').value = this.template.querySelector('.inputfield').value;
-            //конец костыля кастыля
-            this.nameChanges = true; // переменная чтобы в последующем плясать от неё, обрабатывая изменеия в имени 
-            this.changeBackgroundColor();
-            this.showChangedName();
-            this.openFooterMessage();
-        }
-        else {
-            // console.log('no changes');
-            this.showNameText(); //здесь это актуально. дальше - нет... хотя и тут вопрос 
-        }
+    passIdMessage(){
+        let id = this.throwId;
+        const passId = new CustomEvent("passid", {
+            detail: id
+        });
+        this.dispatchEvent(passId);
     }
-    showNameText() {
-        let text = this.template.querySelector(".name");
-        //   text.style.display = ""; //- чтобы показать текст
-        // console.log ("show name");
-        text.style.display = "block";
-        this.enableButtonsMessage();
+
+    handleLoseNameFocus() {  //обработчик клика в пустое место от имени
+        console.log("Name input focus lost ayy");
+        this.nameFocusLostMessage();
     }
-    showChangedName() {
-        // console.log(this.template.querySelector('.inputfield').draftValues);
-        this.changedName = this.template.querySelector('.inputfield').value;
-        let text = this.template.querySelector(".changedname");
-        //   text.style.display = ""; //- чтобы показать текст
-        // console.log ("show changedname");
-        text.style.display = "block";
+    
+    nameFocusLostMessage(){
+        let changeValue = this.template.querySelector('.inputfield').value;
+        const nameFocusLost = new CustomEvent("namefocuslost", {
+            detail: changeValue
+        }) ;
+        this.dispatchEvent(nameFocusLost);
+    }
+
+    @api carryChangesInNameCell(){
+        this.throwName = this.template.querySelector('.inputfield').value;
+        this.changeBackgroundColor();
+        this.editNameButtonClicked = false;
+        this.openFooterMessage();
     }
     // --  --
 
@@ -143,10 +120,10 @@ export default class Row extends LightningElement {
 
     focusLostMessage(){ // передаём значение изменения
         let changeValue = this.template.querySelector('.select').value;
-        const focusLost = new CustomEvent("focuslost", {
+        const ratingFocusLost = new CustomEvent("ratingfocuslost", {
             detail: changeValue
         });
-        this.dispatchEvent(focusLost);
+        this.dispatchEvent(ratingFocusLost);
     }
 
     @api carryChangesInRatingCell(){

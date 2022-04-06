@@ -1,5 +1,6 @@
 <template>
-    <button name="test button" value="test button">test test test</button>
+    <button name="test button" value="test button" onclick={handleTest}>test test test</button>
+
     <table id="accounts" class="model_table">
         <thead>
             <th>Name</th>
@@ -14,8 +15,12 @@
                     onenablebuttonsevent={handleEnableButtons} 
                     onopenfootermessage={handleOpenFooter}
                     ondraftvaluespass={processingDraftValues} 
-                    onfocuslost={draftValuesToVar}
                     
+                    onratingfocuslost={draftValuesToVar}
+                    onnamefocuslost={draftValuesToVar}
+
+                    onpassid ={receiveId}
+
                     key={account.Id}
                     throw-id={account.Id} throw-name={account.Name} throw-rating={account.Rating}>
                 </c-row>
