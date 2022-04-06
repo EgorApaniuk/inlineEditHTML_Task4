@@ -132,28 +132,42 @@ export default class Row extends LightningElement {
 
     // R A T I N G // 
     handleEditRating() {     
-        console.log("edit clicked, tempvar before = " + this.tempVarRating);
-        this.throwRating === undefined ? this.tempVarRating = "" : this.tempVarRating = this.throwRating; // rewriting in tempVar every time edit button pushed 
-        //записываем свежее значение в tempVar при каждом нажатии на edit
-        console.log("edit clicked, tempvar after = " + this.tempVarRating);
+        // console.log("edit clicked, tempvar before = " + this.tempVarRating);
+        // this.throwRating === undefined ? this.tempVarRating = "" : this.tempVarRating = this.throwRating; // rewriting in tempVar every time edit button pushed 
+        // //записываем свежее значение в tempVar при каждом нажатии на edit
+        // console.log("edit clicked, tempvar after = " + this.tempVarRating);
 
         this.editRatingButtonClicked = true; // show rating select, hide rating text
         this.unableButtonsMessage();
     }
     
     handleLoseRatingFocus() {   //обработчик клика в пустое место от рейтинга
-        //checking Rating Changes below (checkRatingChanges())
-        if (this.template.querySelector('.select').value != this.tempVarRating) {   //изменения ЕСТЬ
-            this.throwRating = this.template.querySelector('.select').value;
+        console.log("focus lost");
+        this.focusLostMessage();
+
+        // затем надо перенести проверку рейтинга в родительском компоненте 
+        // 
+        
+        // if (this.template.querySelector('.select').value != this.tempVarRating) {   //изменения ЕСТЬ
+        //     this.throwRating = this.template.querySelector('.select').value;
             this.changeBackgroundColor(); 
             this.editRatingButtonClicked = false;  // hide rating select, show rating text
             this.openFooterMessage()
-        }
-        else {                                                                      //изменений НЕТ
-            this.editRatingButtonClicked = false;  // hide rating select, show rating text
-            this.enableButtonsMessage();
-        }
+        // }
+        // else {                                                                      //изменений НЕТ
+        //     this.editRatingButtonClicked = false;  // hide rating select, show rating text
+        //     this.enableButtonsMessage();
+        // }
     }
+    focusLostMessage(){
+        let valuesForEvent = this.template.querySelector('.select').value;
+        const focusLost = new CustomEvent("focuslost", {
+            detail: valuesForEvent
+        });
+        this.dispatchEvent(focusLost);
+    }
+
+    
 
     changeBackgroundColor() {
         if (this.editRatingButtonClicked) {
@@ -191,50 +205,64 @@ export default class Row extends LightningElement {
         });
         this.dispatchEvent(toastMessage);
     }
+    //    
+
+    // F O O T E R  S A V E
+    @api save(event) {
+        console.log("save (row) started");
+        // this.saveChanges();
+        this.passDraftValuesToTable();
+        this.changeBackgroundColorToDefault();
+        this.enableButtonsMessage();
+    }
+
+    //
+    // как нужно сохранить изменения? Отправить в родительский компонент ивент,
+    // содержащий детейлы, которые будут содержать информацию для обновления.
+    // 
+
+    passDraftValuesToTable(event){
+        draftValues = event.detail.draftValues[0];//
+        const draftValuesEvent = new CustomEvent("draftvaluespass",{
+            detail: this.draftValues
+        });
+        this.dispatchEvent(draftValuesEvent);
+    }
+
+
+    // saveChanges() {
+    //     const fields = {};
+    //     fields[ID_FIELD.fieldApiName] = this.throwId;
+    //     fields["Name"] = this.changedName;
+    //     fields[RATING_FIELD.fieldApiName] = this.changedRating;
+
+    //     const recordInput = { fields };
+
+    //     updateRecord(recordInput)
+    //         .then(() => {
+    //             this.dispatchEvent(
+    //                 new ShowToastEvent({
+    //                     title: 'Success',
+    //                     message: 'Updated successfully',
+    //                     variant: 'success'
+    //                 })
+    //             )
+    //         }).
+    //         catch(error => {
+    //             this.dispatchEvent(
+    //                 new ShowToastEvent({
+    //                     title: 'Error updating or reloading record',
+    //                     message: error.body.message,
+    //                     variant: 'error'
+    //                 })
+    //             );
+    //         });
+    // }
+    //
 
     changeBackgroundColorToDefault() {
         this.template.querySelector(".fieldrating").classList.toggle("input-changed", true);
         this.template.querySelector(".fieldname").classList.toggle("input-changed", true);
     }
-    //
-
-    // F O O T E R  S A V E
-    @api save() {
-        this.saveChanges();
-        this.changeBackgroundColorToDefault();
-        this.enableButtonsMessage();
-    }
-
-    saveChanges() {
-        const fields = {};
-        fields[ID_FIELD.fieldApiName] = this.throwId;
-        fields["Name"] = this.changedName;
-        fields[RATING_FIELD.fieldApiName] = this.changedRating;
-
-        const recordInput = { fields };
-
-        updateRecord(recordInput)
-            .then(() => {
-                this.dispatchEvent(
-                    new ShowToastEvent({
-                        title: 'Success',
-                        message: 'Updated successfully',
-                        variant: 'success'
-                    })
-                )
-            }).
-            catch(error => {
-                this.dispatchEvent(
-                    new ShowToastEvent({
-                        title: 'Error updating or reloading record',
-                        message: error.body.message,
-                        variant: 'error'
-                    })
-                );
-            });
-    }
-    //
-
-
 
 }

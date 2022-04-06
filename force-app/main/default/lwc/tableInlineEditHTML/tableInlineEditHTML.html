@@ -1,4 +1,3 @@
-
 <template>
     <button name="test button" value="test button">test test test</button>
     <table id="accounts" class="model_table">
@@ -10,20 +9,29 @@
 
         <tbody>
             <template for:each={data} for:item="account">
-                <c-row onrefreshtable={handleRefreshTable}
-                 onunablebuttonsevent={handleUnableButtons}
-                 onenablebuttonsevent={handleEnableButtons}
-                 onopenfootermessage={handleOpenFooter}
-                 key={account.Id} throw-id={account.Id} throw-name={account.Name} throw-rating={account.Rating}>
+                <c-row onrefreshtable={handleRefreshTable} 
+                    onunablebuttonsevent={handleUnableButtons}
+                    onenablebuttonsevent={handleEnableButtons} 
+                    onopenfootermessage={handleOpenFooter}
+                    ondraftvaluespass={processingDraftValues} 
+                    onfocuslost={draftValuesToVar}
+                    
+                    key={account.Id}
+                    throw-id={account.Id} throw-name={account.Name} throw-rating={account.Rating}>
                 </c-row>
             </template>
         </tbody>
     </table>
 
     <template if:true={openFooter}>
-       <c-footer-inline-edit 
-       onsaveevent={handleSave}
-       oncancelevent={handleCancel}>
-       </c-footer-inline-edit>
+
+        <footer class="slds-modal__footer">
+            <button class="slds-button slds-button_neutral" onclick={handleCancel}>
+                Cancel
+            </button>
+            <button class="slds-button slds-button_brand" onclick={handleSave}>
+                Save
+            </button>
+        </footer>
     </template>
 </template>
