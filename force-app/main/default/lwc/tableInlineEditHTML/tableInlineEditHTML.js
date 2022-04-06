@@ -9,8 +9,7 @@ export default class TableInlineEditHTML extends LightningElement {
     openFooter = false;
     @track data;
     refreshAccounts;
-    draftValuesStorage;
-    @track draftValues = [];
+    draftValues;
  
 
     @wire (getAccounts)
@@ -59,40 +58,32 @@ export default class TableInlineEditHTML extends LightningElement {
 
     handleSave(){    
         console.log("save pushed");
-        // let allRows = this.template.querySelectorAll("c-row");
-        // allRows.forEach(function(item, i, allRows){
-        //     item.save();
-        // });    
-
-        //  this.template.querySelector('c-row').save();
-
         this.openFooter = false;
     }
 
-   
-    handleSelection(event){
-       
-   }
 
     draftValuesToVar(event){
-        // console.log('this.draftValues ::: '+JSON.stringify(this.draftValues));
-        // console.log(this.template.querySelector('c-row').draftValues);
-        console.log(event.detail); // отправляет то что надо.
-        // console.log("draft values = "+this.draftValues);
-        // console.log("account rating?? = " + this.account.Rating);
-        // this.draftValuesStorage = event.detail.draftValues;
+        console.log("Table gets this draftvalues : "+event.detail); 
+        this.draftValues = event.detail;
 
-        
         //iniciiruem proverku
         this.checkRating();
     }
 
     checkRating(){
-        if(this.draftValuesStorage == this.account.Rating){// a kak sravnit???
-            console.log("there are changes in rating");    // (s chem?)
+        console.log(this.account.Rating);
+        if(this.draftValues != this.account.Rating){
+            console.log("there are changes in rating");  
+
+            this.template.querySelector('c-row').carryChangesInRatingCell();  
         }
         else{
             console.log("NO changes in rating");
+
+            this.template.querySelector('c-row').editRatingButtonClicked = false;
+            console.log("editRatingButtonClicked = false now");
+            // hide rating select, show rating text
+            this.handleEnableButtons(); 
         }
     }
 

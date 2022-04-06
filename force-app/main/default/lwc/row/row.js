@@ -130,13 +130,8 @@ export default class Row extends LightningElement {
     }
     // --  --
 
-    // R A T I N G // 
+    // R A T I N G //
     handleEditRating() {     
-        // console.log("edit clicked, tempvar before = " + this.tempVarRating);
-        // this.throwRating === undefined ? this.tempVarRating = "" : this.tempVarRating = this.throwRating; // rewriting in tempVar every time edit button pushed 
-        // //записываем свежее значение в tempVar при каждом нажатии на edit
-        // console.log("edit clicked, tempvar after = " + this.tempVarRating);
-
         this.editRatingButtonClicked = true; // show rating select, hide rating text
         this.unableButtonsMessage();
     }
@@ -144,29 +139,22 @@ export default class Row extends LightningElement {
     handleLoseRatingFocus() {   //обработчик клика в пустое место от рейтинга
         console.log("focus lost");
         this.focusLostMessage();
-
-        // затем надо перенести проверку рейтинга в родительском компоненте 
-        // 
-        
-        // if (this.template.querySelector('.select').value != this.tempVarRating) {   //изменения ЕСТЬ
-        //     this.throwRating = this.template.querySelector('.select').value;
-            this.changeBackgroundColor(); 
-            this.editRatingButtonClicked = false;  // hide rating select, show rating text
-            this.openFooterMessage()
-        // }
-        // else {                                                                      //изменений НЕТ
-        //     this.editRatingButtonClicked = false;  // hide rating select, show rating text
-        //     this.enableButtonsMessage();
-        // }
     }
-    focusLostMessage(){
-        let valuesForEvent = this.template.querySelector('.select').value;
+
+    focusLostMessage(){ // передаём значение изменения
+        let changeValue = this.template.querySelector('.select').value;
         const focusLost = new CustomEvent("focuslost", {
-            detail: valuesForEvent
+            detail: changeValue
         });
         this.dispatchEvent(focusLost);
     }
 
+    @api carryChangesInRatingCell(){
+        this.throwRating = this.template.querySelector('.select').value;
+            this.changeBackgroundColor(); 
+            this.editRatingButtonClicked = false;
+            this.openFooterMessage();
+    }
     
 
     changeBackgroundColor() {
