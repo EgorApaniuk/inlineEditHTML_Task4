@@ -9,7 +9,6 @@ export default class Row extends LightningElement {
     @api changedRating;
     @api editRatingButtonClicked = false;
     @api editNameButtonClicked = false;
-    @api hideRating = false;
 
     @api tempVarRating = false; //эти переменные являются временным хранилищем значений 
     // @api tempVarName;        
@@ -125,17 +124,11 @@ export default class Row extends LightningElement {
 
     @api carryChangesInRatingCell() {
         console.log("carryChangesInRatingCell Started");
-        // console.log("throwRating в который сейчас запишутся значения из селекта : " + this.throwRating); // Почему берётся throwRating первой записи? 
-        // console.log("Id в который сейчас запишутся значения из селекта : " + this.throwId); // Почему берётся throwId первой записи? 
-
-        // console.log("СЕЛЕКТ ВАЛУЕ = "+this.template.querySelector('.select').value);
-        this.throwRating = this.template.querySelector('.select').value;
-        this.editRatingButtonClicked = false;
-        
        
-        
+        let tempRatingVar = this.template.querySelector('.select').value; // потому что пока editRatingButtonClicked = true - throwRating'a не существует
         this.changeBackgroundColor();
-        // console.log("editRatingButtonclicked ? - " + this.editRatingButtonClicked);
+        this.editRatingButtonClicked = false;
+        this.throwRating = tempRatingVar; //а вот теперь существует
         this.openFooterMessage();
     }
     // R A T I N G //
@@ -152,7 +145,7 @@ export default class Row extends LightningElement {
         }
     }
 
-    changeBackgroundColorToDefault() {
+    @api changeBackgroundColorToDefault() {
         this.template.querySelector(".fieldrating").classList.toggle("input-changed", true);
         this.template.querySelector(".fieldname").classList.toggle("input-changed", true);
     }
@@ -167,23 +160,22 @@ export default class Row extends LightningElement {
     // F O O T E R //
 
     // F O O T E R  C A N C E L //
-    // @api cancel() {
+    @api cancel() {
         // console.log("TempVar value = " + this.tempVarRating);
         // console.log("throwRating value before cancel = " + this.throwRating);
 
-    //     this.throwRating = this.tempVarRating; // setup previous values
+        // this.throwRating = this.tempVarRating; // setup previous values
 
-    //     this.changeBackgroundColorToDefault();
-    //     this.enableButtonsMessage();
+        // this.changeBackgroundColorToDefault();
+        // this.enableButtonsMessage();
 
-    //     const toastMessage = new ShowToastEvent({
-    //         title: "Canceled",
-    //         message: "changes canceled",
-    //         variant: "info",
-    //     });
-    //     this.dispatchEvent(toastMessage);
-    // }
-    //    
+        // const toastMessage = new ShowToastEvent({
+        //     title: "Canceled",
+        //     message: "changes canceled",
+        //     variant: "info",
+        // });
+        // this.dispatchEvent(toastMessage);
+    }
 
 
 

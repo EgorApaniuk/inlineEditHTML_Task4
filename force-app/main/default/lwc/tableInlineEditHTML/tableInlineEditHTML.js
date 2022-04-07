@@ -98,21 +98,17 @@ export default class TableInlineEditHTML extends LightningElement {
         if(this.draftRatingVar != this.dataArray[this.indexVar].Rating){
             console.log("there are changes in rating");  
 
-
-            console.log('[data-id=\'' +this.receivedId +'\']');
-            console.log(this.template.querySelector('[data-id=\'' +this.receivedId +'\']')); // ашалеть бять
             // this.template.querySelectorAll('c-row').carryChangesInRatingCell();  
+            
+            console.log('[data-id=\'' +this.receivedId +'\']');
+            console.log(this.template.querySelector('[data-id=\'' +this.receivedId +'\']')); // всё просто на самом делеаааааааааааа
+            
             this.template.querySelector('[data-id=\'' +this.receivedId +'\']').carryChangesInRatingCell();
-            
-            // this.template.querySelector('[data-id=' +this.receivedId +']');
-
-            
         }
         else{
             console.log("NO changes in rating");
 
-            this.template.querySelector('c-row').editRatingButtonClicked = false;// hide rating select, show rating text
-            // console.log("editRatingButtonclicked ? - " + this.editRatingButtonClicked);
+            this.template.querySelector('[data-id=\'' +this.receivedId +'\']').editRatingButtonClicked = false;// hide rating select, show rating text
             this.handleEnableButtons(); 
         }
     }
@@ -121,16 +117,19 @@ export default class TableInlineEditHTML extends LightningElement {
         console.log("cancel pushed");
         this.openFooter = false;
         this.handleEnableButtons();
-        // this.draftValues = [];
+        this.draftNameVar = [];
+        this.draftRatingVar = [];
+        this.template.querySelector('[data-id=\''+this.receivedId+'\']').throwRating = this.dataArray[this.indexVar].Rating;
+        this.template.querySelector('[data-id=\''+this.receivedId+'\']').changeBackgroundColorToDefault();
     } 
 
     handleSave(){    
         console.log("save pushed");
 
         const fields = {};
-        fields[ID_FIELD.fieldApiName] = event.detail.draftValues[0].Id;
+        fields[ID_FIELD.fieldApiName] = this.receivedId;
         // fields["Name"] = event.detail.draftValues[0].Name;
-        fields[RATING_FIELD.fieldApiName] = event.detail.draftValues[0].Rating;
+        fields[RATING_FIELD.fieldApiName] = this.draftRatingVar;
 
         const recordInput = { fields };
 
@@ -154,8 +153,8 @@ export default class TableInlineEditHTML extends LightningElement {
                 );
             });
 
-        // this.openFooter = false;
-        // this.handleEnableButtons();
+        this.openFooter = false;
+        this.handleEnableButtons();
 
     }
 
