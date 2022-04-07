@@ -125,19 +125,18 @@ export default class Row extends LightningElement {
 
     @api carryChangesInRatingCell() {
         console.log("carryChangesInRatingCell Started");
-        console.log("throwRating в который сейчас запишутся значения из селекта : " + this.throwRating); // Почему берётся throwRating первой записи? 
-        console.log("Id в который сейчас запишутся значения из селекта : " + this.throwId); // Почему берётся throwId первой записи? 
+        // console.log("throwRating в который сейчас запишутся значения из селекта : " + this.throwRating); // Почему берётся throwRating первой записи? 
+        // console.log("Id в который сейчас запишутся значения из селекта : " + this.throwId); // Почему берётся throwId первой записи? 
 
-        this.template.querySelector('.select').value;
-        console.log("СЕЛЕКТ ВАЛУЕ = "+this.template.querySelector('.select').value);
-        
-        this.editRatingButtonClicked = false;
+        // console.log("СЕЛЕКТ ВАЛУЕ = "+this.template.querySelector('.select').value);
+        // this.throwRating = this.template.querySelector('.select').value;
+        // this.editRatingButtonClicked = false;
         
        
         
-        this.changeBackgroundColor();
-        // console.log("editRatingButtonclicked ? - " + this.editRatingButtonClicked);
-        this.openFooterMessage();
+        // this.changeBackgroundColor();
+        // // console.log("editRatingButtonclicked ? - " + this.editRatingButtonClicked);
+        // this.openFooterMessage();
     }
     // R A T I N G //
 

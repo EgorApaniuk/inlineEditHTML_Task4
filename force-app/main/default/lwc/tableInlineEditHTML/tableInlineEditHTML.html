@@ -8,8 +8,11 @@
             <th>Delete</th>
         </thead>
 
-        <tbody>
+        <tbody><div>
+
+        </div>
             <template for:each={data} for:item="account">
+                
                 <c-row onrefreshtable={handleRefreshTable} 
                     onunablebuttonsevent={handleUnableButtons}
                     onenablebuttonsevent={handleEnableButtons} 
@@ -23,6 +26,7 @@
                     key={account.Id}
                     throw-id={account.Id} throw-name={account.Name} throw-rating={account.Rating}>
                 </c-row>
+            
             </template>
         </tbody>
     </table>
