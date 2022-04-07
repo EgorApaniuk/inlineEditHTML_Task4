@@ -16,10 +16,9 @@
                     onopenfootermessage={handleOpenFooter}
                     ondraftvaluespass={processingDraftValues} 
                     
-                    onratingfocuslost={draftValuesToVar}
-                    onnamefocuslost={draftValuesToVar}
+                    onratingfocuslost={draftRatingToVar}
+                    onnamefocuslost={draftNameToVar}
 
-                    onpassid ={receiveId}
 
                     key={account.Id}
                     throw-id={account.Id} throw-name={account.Name} throw-rating={account.Rating}>

@@ -84,11 +84,13 @@ export default class Row extends LightningElement {
     }
     
     nameFocusLostMessage(){
-        let changeValue = this.template.querySelector('.inputfield').value;
+        let draftName = this.template.querySelector('.inputfield').value;
+        console.log("отправляемое значение Драфта имени - "+ draftName);
         let id = this.throwId;
+        console.log("отправляемое значение Id  - " +id);
         const nameFocusLost = new CustomEvent("namefocuslost", {
-            detail: {changeValue, id}
-        }) ;
+            detail: {draftName, id}
+        });
         this.dispatchEvent(nameFocusLost);
     }
 
@@ -104,6 +106,7 @@ export default class Row extends LightningElement {
     // R A T I N G //
     handleEditRating() {     
         this.editRatingButtonClicked = true; // show rating select, hide rating text
+        console.log("edit rating button clicked?  - "+this.editRatingButtonClicked)
         this.unableButtonsMessage();
     }
     
@@ -113,20 +116,27 @@ export default class Row extends LightningElement {
     }
 
     ratingFocusLostMessage(){ // передаём значение изменения
-        let changedValue = this.template.querySelector('.select').value;
+        let draftRating = this.template.querySelector('.select').value;
+        console.log("отправляемое значение Драфта - "+ draftRating);
         let id = this.throwId;
+        console.log("отправляемое значение Id  - " +id);
         const ratingFocusLost = new CustomEvent("ratingfocuslost", {
-            detail: {changedValue, id}
+            detail: {draftRating, id}
         });
         this.dispatchEvent(ratingFocusLost);
     }
 
        
     @api carryChangesInRatingCell(){
+        console.log("carryChangesInRatingCell Started");
+        console.log("throwRating в который сейчас запишутся значения из селекта : "+this.throwRating);
+        console.log("Id в который сейчас запишутся значения из селекта : "+this.throwId);
+        
         this.throwRating = this.template.querySelector('.select').value;
-            this.changeBackgroundColor(); 
-            this.editRatingButtonClicked = false;
-            this.openFooterMessage();
+        this.changeBackgroundColor(); 
+        this.editRatingButtonClicked = false;
+        console.log("editRatingButtonclicked ? - " + this.editRatingButtonClicked);
+        this.openFooterMessage();
     }
     
 

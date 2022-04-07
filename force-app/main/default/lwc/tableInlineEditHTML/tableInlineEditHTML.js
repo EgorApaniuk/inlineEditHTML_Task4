@@ -10,7 +10,8 @@ export default class TableInlineEditHTML extends LightningElement {
     @track data;
     dataArray;
     refreshAccounts;
-    draftValues;
+    draftRatingVar;
+    draftNameVar;
     receivedId; // poka testiruem
     indexVar;
 
@@ -58,20 +59,24 @@ export default class TableInlineEditHTML extends LightningElement {
 
     
 
-    draftValuesToVar(event){
-        this.draftValues = event.detail.changeValue;
+    draftRatingToVar(event){
+        this.draftRatingVar = event.detail.draftRating;
         this.receivedId = event.detail.id;
         console.log("получена айди : "+this.receivedId);
-        console.log("получено драфт значение :"+this.draftValues);
+        console.log("получено драфт значение :"+this.draftRatingVar);
         this.indexFind();
-        console.log("indexVar : "+indexVar);
-        if(this.template.querySelector('c-row').editRatingButtonClicked == true){ 
-            this.checkRating(); //checking changes in rating
-        }
-        else{
-            this.checkName();   //checking changes in name // инфа от кэпа 
-        }
+        console.log("indexVar : "+this.indexVar);
+        this.checkRating();     //checking changes in rating
+    }
 
+    draftNameToVar(event){
+        this.draftNameVar = event.detail.draftName;
+        this.receivedId = event.detail.id;
+        console.log("получена айди : "+this.receivedId);
+        console.log("получено драфт значение имени :"+this.draftNameVar);
+        this.indexFind();
+        console.log("indexVar : "+this.indexVar);
+        this.checkName();   //checking changes in name // инфа от кэпа 
     }
 
     checkName(){
@@ -89,17 +94,18 @@ export default class TableInlineEditHTML extends LightningElement {
 
     checkRating(){
         console.log("check rating");
-        // if(this.draftValues != this.account.Rating){
-        //     console.log("there are changes in rating");  
+        if(this.draftRatingVar != this.dataArray[this.indexVar].Rating){
+            console.log("there are changes in rating");  
 
-        //     this.template.querySelector('c-row').carryChangesInRatingCell();  
-        // }
-        // else{
-        //     console.log("NO changes in rating");
+            this.template.querySelector('c-row').carryChangesInRatingCell();  
+            console.log("Обращение по апи сработало");
+        }
+        else{
+            console.log("NO changes in rating");
 
-        //     this.template.querySelector('c-row').editRatingButtonClicked = false;// hide rating select, show rating text
-        //     this.handleEnableButtons(); 
-        // }
+            // this.template.querySelector('c-row').editRatingButtonClicked = false;// hide rating select, show rating text
+            this.handleEnableButtons(); 
+        }
     }
 
     processingDraftValues(event){
@@ -139,30 +145,45 @@ export default class TableInlineEditHTML extends LightningElement {
         console.log("cancel pushed");
         this.openFooter = false;
         this.handleEnableButtons();
-        this.draftValuesStorage = [];
         this.draftValues = [];
     } 
 
     handleSave(){    
         console.log("save pushed");
-        this.openFooter = false;
-        this.handleEnableButtons();
+
+        const fields = {};
+        fields[ID_FIELD.fieldApiName] = event.detail.draftValues[0].Id;
+        // fields["Name"] = event.detail.draftValues[0].Name;
+        fields[RATING_FIELD.fieldApiName] = event.detail.draftValues[0].Rating;
+
+        const recordInput = { fields };
+
+        updateRecord(recordInput)
+            .then(() => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Success',
+                        message: 'Updated successfully',
+                        variant: 'success'
+                    })
+                )
+            }).
+            catch(error => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Error updating or reloading record',
+                        message: error.body.message,
+                        variant: 'error'
+                    })
+                );
+            });
+
+        // this.openFooter = false;
+        // this.handleEnableButtons();
 
     }
 
-    // receiveId(event){
-        // this.receivedId = event.detail;
-        // console.log("receivedId = "+ this.receivedId);
-    // }
-
     handleTest(){
-        // console.log("test test test");
-        // // console.log(this.receivedId);
-        // console.log(this.dataArray);
-        
-
-        // this.indexFind();
-
     }
 
     // indexFind(){
