@@ -1,14 +1,6 @@
 import { LightningElement, api } from 'lwc';
 import deleteAccount from '@salesforce/apex/accountController.deleteAccount';
 
-import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import { updateRecord } from 'lightning/uiRecordApi';
-import ID_FIELD from '@salesforce/schema/Account.Id';
-import RATING_FIELD from '@salesforce/schema/Account.Rating';
-import NAME_FIELD from '@salesforce/schema/Account.Name';
-
-
-
 export default class Row extends LightningElement {
     @api throwId;
     @api throwRating;
@@ -16,21 +8,26 @@ export default class Row extends LightningElement {
     @api changedName;
     @api changedRating;
     @api editRatingButtonClicked = false;
-    @api editNameButtonClicked = false; 
+    @api editNameButtonClicked = false;
 
-    @api tempVarRating = false; //эти переменные являются временным хранилищем значений + по дефолту хай будет равно рейтингу
-    // @api tempVarName;   //полей, чтобы в случае CANCEL вернуться к ним
+    @api tempVarRating = false; //эти переменные являются временным хранилищем значений 
+    // @api tempVarName;        
 
-    renderedCallback() {    // для того, чтобы нынешний рейтинг передавался в select(dropbar)
+    // @api switchEditRatingButton(){
+    //     this.editRatingButtonClicked == true ? this.editRatingButtonClicked = false : this.editRatingButtonClicked = true;
+    //     console.log("EditRatingButtonClicked switched to: " +this.editRatingButtonClicked);
+    // }
+
+    renderedCallback() {    
         // if (this.template.querySelector('.select')){
         //     this.template.querySelector('.select').value = this.throwRating;
         // }
         this.template.querySelector('.select') ? this.template.querySelector('.select').value = this.throwRating : null;
         this.template.querySelector('.inputfield') ? this.template.querySelector('.inputfield').value = this.throwName : null;
-        // console.log("renderedCallback srabotal");
+        // для того, чтобы select рейтинга и inputfield имени не были пустыми при появлении
     }
 
-    // U N A B L E / E N A B L E
+    // U N A B L E / E N A B L E //
     unableButtonsMessage() {
         const unableButtonsEvent = new CustomEvent("unablebuttonsevent");
         this.dispatchEvent(unableButtonsEvent);
@@ -59,42 +56,42 @@ export default class Row extends LightningElement {
         const updateEvent = new CustomEvent("refreshtable");
         this.dispatchEvent(updateEvent);
     }
-    // --  -- 
+    // U N A B L E / E N A B L E // 
 
-    // D E L E T E 
+    // D E L E T E // 
     handleDeleteRow(event) {
         deleteAccount({ accountId: event.target.dataset.accId }).then(() => {
             this.refreshTable();
         })
     }
-    // --  -- 
+    // D E L E T E //
 
     // N A M E 
     handleEditName() {
-        console.log("current id : "+this.throwId);
-        console.log("current name: "+this.throwName);
+        console.log("current id : " + this.throwId);
+        console.log("current name: " + this.throwName);
         this.editNameButtonClicked = true; // show Name input, hide Name text
         this.unableButtonsMessage();
     }
-    
-    
+
+
     handleLoseNameFocus() {  //обработчик клика в пустое место от имени
-        console.log("Name input focus lost ayy");
+        console.log("Name input focus lost");
         this.nameFocusLostMessage();
     }
-    
-    nameFocusLostMessage(){
+
+    nameFocusLostMessage() {//позже объеденить nameFocusLost и ratingFocusLost в одну функцию draftValuesMessage
         let draftName = this.template.querySelector('.inputfield').value;
-        console.log("отправляемое значение Драфта имени - "+ draftName);
+        console.log("отправляемое значение Драфта имени - " + draftName);
         let id = this.throwId;
-        console.log("отправляемое значение Id  - " +id);
+        console.log("отправляемое значение Id  - " + id);
         const nameFocusLost = new CustomEvent("namefocuslost", {
-            detail: {draftName, id}
+            detail: { draftName, id }
         });
         this.dispatchEvent(nameFocusLost);
     }
 
-    @api carryChangesInNameCell(){
+    @api carryChangesInNameCell() {
         this.throwName = this.template.querySelector('.inputfield').value;
         this.changeBackgroundColor();
         this.editNameButtonClicked = false; // hide Name input, show Name text
@@ -104,41 +101,40 @@ export default class Row extends LightningElement {
 
 
     // R A T I N G //
-    handleEditRating() {     
+    handleEditRating() {
+        this.throwRating === undefined ? this.tempVarRating = "" : this.tempVarRating = this.throwRating;
         this.editRatingButtonClicked = true; // show rating select, hide rating text
-        console.log("edit rating button clicked?  - "+this.editRatingButtonClicked)
         this.unableButtonsMessage();
     }
-    
+
     handleLoseRatingFocus() {   //обработчик клика в пустое место от рейтинга
         console.log("focus lost");
         this.ratingFocusLostMessage();
     }
 
-    ratingFocusLostMessage(){ // передаём значение изменения
+    ratingFocusLostMessage() { // передаём значение изменения
         let draftRating = this.template.querySelector('.select').value;
-        console.log("отправляемое значение Драфта - "+ draftRating);
+        console.log("отправляемое значение Драфта - " + draftRating);
         let id = this.throwId;
-        console.log("отправляемое значение Id  - " +id);
+        console.log("отправляемое значение Id  - " + id);
         const ratingFocusLost = new CustomEvent("ratingfocuslost", {
-            detail: {draftRating, id}
+            detail: { draftRating, id }
         });
         this.dispatchEvent(ratingFocusLost);
     }
 
-       
-    @api carryChangesInRatingCell(){
+    @api carryChangesInRatingCell() {
         console.log("carryChangesInRatingCell Started");
-        console.log("throwRating в который сейчас запишутся значения из селекта : "+this.throwRating);
-        console.log("Id в который сейчас запишутся значения из селекта : "+this.throwId);
-        
-        this.throwRating = this.template.querySelector('.select').value;
-        this.changeBackgroundColor(); 
-        this.editRatingButtonClicked = false;
-        console.log("editRatingButtonclicked ? - " + this.editRatingButtonClicked);
-        this.openFooterMessage();
+        console.log("throwRating в который сейчас запишутся значения из селекта : " + this.throwRating); // Почему берётся throwRating первой записи? 
+        console.log("Id в который сейчас запишутся значения из селекта : " + this.throwId); // Почему берётся throwId первой записи? 
+
+        // this.throwRating = this.template.querySelector('.select').value; //
+        // this.changeBackgroundColor();
+        // this.editRatingButtonClicked = false;
+        // console.log("editRatingButtonclicked ? - " + this.editRatingButtonClicked);
+        // this.openFooterMessage();
     }
-    
+    // R A T I N G //
 
     changeBackgroundColor() {
         if (this.editRatingButtonClicked) {
@@ -150,7 +146,13 @@ export default class Row extends LightningElement {
             this.template.querySelector(".fieldname").classList.toggle("yellow-cell", true);
         }
     }
-    // R A T I N G //
+
+    changeBackgroundColorToDefault() {
+        this.template.querySelector(".fieldrating").classList.toggle("input-changed", true);
+        this.template.querySelector(".fieldname").classList.toggle("input-changed", true);
+    }
+
+
 
     // F O O T E R //
     openFooterMessage() {
@@ -160,45 +162,25 @@ export default class Row extends LightningElement {
     // F O O T E R //
 
     // F O O T E R  C A N C E L //
-    @api cancel() {
-        console.log("TempVar value = " + this.tempVarRating);
-        console.log("throwRating value before cancel = " + this.throwRating);
-        
-        this.throwRating = this.tempVarRating; // setup previous values
+    // @api cancel() {
+        // console.log("TempVar value = " + this.tempVarRating);
+        // console.log("throwRating value before cancel = " + this.throwRating);
 
-        this.changeBackgroundColorToDefault();
-        this.enableButtonsMessage();
+    //     this.throwRating = this.tempVarRating; // setup previous values
 
-        const toastMessage = new ShowToastEvent({
-            title: "Canceled",
-            message: "changes canceled",
-            variant: "info",
-        });
-        this.dispatchEvent(toastMessage);
-    }
+    //     this.changeBackgroundColorToDefault();
+    //     this.enableButtonsMessage();
+
+    //     const toastMessage = new ShowToastEvent({
+    //         title: "Canceled",
+    //         message: "changes canceled",
+    //         variant: "info",
+    //     });
+    //     this.dispatchEvent(toastMessage);
+    // }
     //    
 
-    // F O O T E R  S A V E
-    @api save(event) {
-        console.log("save (row) started");
-        // this.saveChanges();
-        this.passDraftValuesToTable();
-        this.changeBackgroundColorToDefault();
-        this.enableButtonsMessage();
-    }
 
-    //
-    // как нужно сохранить изменения? Отправить в родительский компонент ивент,
-    // содержащий детейлы, которые будут содержать информацию для обновления.
-    // 
-
-    passDraftValuesToTable(event){
-        draftValues = event.detail.draftValues[0];//
-        const draftValuesEvent = new CustomEvent("draftvaluespass",{
-            detail: this.draftValues
-        });
-        this.dispatchEvent(draftValuesEvent);
-    }
 
 
     // saveChanges() {
@@ -228,12 +210,5 @@ export default class Row extends LightningElement {
     //                 })
     //             );
     //         });
-    // }
-    //
-
-    changeBackgroundColorToDefault() {
-        this.template.querySelector(".fieldrating").classList.toggle("input-changed", true);
-        this.template.querySelector(".fieldname").classList.toggle("input-changed", true);
-    }
-
+    // } 
 }
