@@ -94,10 +94,11 @@ export default class TableInlineEditHTML extends LightningElement {
 
     checkRating(){
         console.log("check rating");
+        console.log(this.draftRatingVar, this.dataArray[this.indexVar].Rating);
         if(this.draftRatingVar != this.dataArray[this.indexVar].Rating){
             console.log("there are changes in rating");  
 
-            this.template.querySelector('c-row').carryChangesInRatingCell();  
+            this.template.querySelectorAll('c-row').carryChangesInRatingCell();  
         }
         else{
             console.log("NO changes in rating");

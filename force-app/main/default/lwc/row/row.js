@@ -9,6 +9,7 @@ export default class Row extends LightningElement {
     @api changedRating;
     @api editRatingButtonClicked = false;
     @api editNameButtonClicked = false;
+    @api hideRating = false;
 
     @api tempVarRating = false; //эти переменные являются временным хранилищем значений 
     // @api tempVarName;        
@@ -97,8 +98,7 @@ export default class Row extends LightningElement {
         this.editNameButtonClicked = false; // hide Name input, show Name text
         this.openFooterMessage();
     }
-    // --  --
-
+    // --  
 
     // R A T I N G //
     handleEditRating() {
@@ -128,15 +128,21 @@ export default class Row extends LightningElement {
         console.log("throwRating в который сейчас запишутся значения из селекта : " + this.throwRating); // Почему берётся throwRating первой записи? 
         console.log("Id в который сейчас запишутся значения из селекта : " + this.throwId); // Почему берётся throwId первой записи? 
 
-        // this.throwRating = this.template.querySelector('.select').value; //
-        // this.changeBackgroundColor();
-        // this.editRatingButtonClicked = false;
+        this.template.querySelector('.select').value;
+        console.log("СЕЛЕКТ ВАЛУЕ = "+this.template.querySelector('.select').value);
+        
+        this.editRatingButtonClicked = false;
+        
+       
+        
+        this.changeBackgroundColor();
         // console.log("editRatingButtonclicked ? - " + this.editRatingButtonClicked);
-        // this.openFooterMessage();
+        this.openFooterMessage();
     }
     // R A T I N G //
 
     changeBackgroundColor() {
+        console.log(this.editRatingButtonClicked);
         if (this.editRatingButtonClicked) {
             this.template.querySelector(".fieldrating").classList.toggle("input-changed", false);   // красим рейтинг 
             this.template.querySelector(".fieldrating").classList.toggle("yellow-cell", true);
