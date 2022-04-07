@@ -129,14 +129,14 @@ export default class Row extends LightningElement {
         // console.log("Id в который сейчас запишутся значения из селекта : " + this.throwId); // Почему берётся throwId первой записи? 
 
         // console.log("СЕЛЕКТ ВАЛУЕ = "+this.template.querySelector('.select').value);
-        // this.throwRating = this.template.querySelector('.select').value;
-        // this.editRatingButtonClicked = false;
+        this.throwRating = this.template.querySelector('.select').value;
+        this.editRatingButtonClicked = false;
         
        
         
-        // this.changeBackgroundColor();
-        // // console.log("editRatingButtonclicked ? - " + this.editRatingButtonClicked);
-        // this.openFooterMessage();
+        this.changeBackgroundColor();
+        // console.log("editRatingButtonclicked ? - " + this.editRatingButtonClicked);
+        this.openFooterMessage();
     }
     // R A T I N G //
 

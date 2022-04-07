@@ -98,7 +98,15 @@ export default class TableInlineEditHTML extends LightningElement {
         if(this.draftRatingVar != this.dataArray[this.indexVar].Rating){
             console.log("there are changes in rating");  
 
-            this.template.querySelectorAll('c-row').carryChangesInRatingCell();  
+
+            console.log('[data-id=\'' +this.receivedId +'\']');
+            console.log(this.template.querySelector('[data-id=\'' +this.receivedId +'\']')); // ашалеть бять
+            // this.template.querySelectorAll('c-row').carryChangesInRatingCell();  
+            this.template.querySelector('[data-id=\'' +this.receivedId +'\']').carryChangesInRatingCell();
+            
+            // this.template.querySelector('[data-id=' +this.receivedId +']');
+
+            
         }
         else{
             console.log("NO changes in rating");
