@@ -2,6 +2,13 @@ import { LightningElement, wire, track } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { refreshApex } from '@salesforce/apex';
 
+import { updateRecord } from 'lightning/uiRecordApi';
+import ID_FIELD from '@salesforce/schema/Account.Id';
+import RATING_FIELD from '@salesforce/schema/Account.Rating';
+import NAME_FIELD from '@salesforce/schema/Account.Name';
+
+
+
 import getAccounts from '@salesforce/apex/AccountController.getAccounts';
 
 export default class TableInlineEditHTML extends LightningElement {
@@ -94,20 +101,12 @@ export default class TableInlineEditHTML extends LightningElement {
 
     checkRating(){
         console.log("check rating");
-        console.log(this.draftRatingVar, this.dataArray[this.indexVar].Rating);
-        if(this.draftRatingVar != this.dataArray[this.indexVar].Rating){
-            console.log("there are changes in rating");  
-
-            // this.template.querySelectorAll('c-row').carryChangesInRatingCell();  
-            
-            console.log('[data-id=\'' +this.receivedId +'\']');
-            console.log(this.template.querySelector('[data-id=\'' +this.receivedId +'\']')); // всё просто на самом делеаааааааааааа
-            
+        if(this.draftRatingVar != this.dataArray[this.indexVar].Rating){            
+            // console.log('[data-id=\'' +this.receivedId +'\']');
+            // console.log(this.template.querySelector('[data-id=\'' +this.receivedId +'\']')); // всё просто на самом делеаааааааааааа
             this.template.querySelector('[data-id=\'' +this.receivedId +'\']').carryChangesInRatingCell();
         }
         else{
-            console.log("NO changes in rating");
-
             this.template.querySelector('[data-id=\'' +this.receivedId +'\']').editRatingButtonClicked = false;// hide rating select, show rating text
             this.handleEnableButtons(); 
         }
@@ -119,6 +118,7 @@ export default class TableInlineEditHTML extends LightningElement {
         this.handleEnableButtons();
         this.draftNameVar = [];
         this.draftRatingVar = [];
+        // console.log(Array.from(this.template.querySelector("tbody").children).find((row)=>row.dataset.id==this.receivedId));
         this.template.querySelector('[data-id=\''+this.receivedId+'\']').throwRating = this.dataArray[this.indexVar].Rating;
         this.template.querySelector('[data-id=\''+this.receivedId+'\']').changeBackgroundColorToDefault();
     } 
@@ -153,9 +153,9 @@ export default class TableInlineEditHTML extends LightningElement {
                 );
             });
 
+        this.template.querySelector('[data-id=\''+this.receivedId+'\']').changeBackgroundColorToDefault();
         this.openFooter = false;
         this.handleEnableButtons();
-
     }
 
     handleTest(){

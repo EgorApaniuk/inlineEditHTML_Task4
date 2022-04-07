@@ -13,11 +13,6 @@ export default class Row extends LightningElement {
     @api tempVarRating = false; //эти переменные являются временным хранилищем значений 
     // @api tempVarName;        
 
-    // @api switchEditRatingButton(){
-    //     this.editRatingButtonClicked == true ? this.editRatingButtonClicked = false : this.editRatingButtonClicked = true;
-    //     console.log("EditRatingButtonClicked switched to: " +this.editRatingButtonClicked);
-    // }
-
     renderedCallback() {    
         // if (this.template.querySelector('.select')){
         //     this.template.querySelector('.select').value = this.throwRating;
@@ -74,13 +69,14 @@ export default class Row extends LightningElement {
         this.unableButtonsMessage();
     }
 
-
-    handleLoseNameFocus() {  //обработчик клика в пустое место от имени
+    handleLoseNameFocus(event) {  //обработчик клика в пустое место от имени
         console.log("Name input focus lost");
         this.nameFocusLostMessage();
+        
+        console.log(event);
     }
 
-    nameFocusLostMessage() {//позже объеденить nameFocusLost и ratingFocusLost в одну функцию draftValuesMessage
+    nameFocusLostMessage(event) {//позже объеденить nameFocusLost и ratingFocusLost в одну функцию draftValuesMessage
         let draftName = this.template.querySelector('.inputfield').value;
         console.log("отправляемое значение Драфта имени - " + draftName);
         let id = this.throwId;
