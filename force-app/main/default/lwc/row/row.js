@@ -10,10 +10,10 @@ export default class Row extends LightningElement {
     @api editRatingButtonClicked = false;
     @api editNameButtonClicked = false;
 
-    @api tempVarRating = false; //эти переменные являются временным хранилищем значений 
+    // @api tempVarRating = false; //эти переменные являются временным хранилищем значений 
     // @api tempVarName;        
 
-    renderedCallback() {    
+    renderedCallback() {
         // if (this.template.querySelector('.select')){
         //     this.template.querySelector('.select').value = this.throwRating;
         // }
@@ -69,63 +69,84 @@ export default class Row extends LightningElement {
         this.unableButtonsMessage();
     }
 
-    handleLoseNameFocus(event) {  //обработчик клика в пустое место от имени
-        console.log("Name input focus lost");
-        this.nameFocusLostMessage();
-        
-        console.log(event);
-    }
+    // handleLoseNameFocus(event) {  //обработчик клика в пустое место от имени
+    //     console.log("Name input focus lost");
+    //     this.nameFocusLostMessage();
 
-    nameFocusLostMessage(event) {//позже объеденить nameFocusLost и ratingFocusLost в одну функцию draftValuesMessage
-        let draftName = this.template.querySelector('.inputfield').value;
-        console.log("отправляемое значение Драфта имени - " + draftName);
-        let id = this.throwId;
-        console.log("отправляемое значение Id  - " + id);
-        const nameFocusLost = new CustomEvent("namefocuslost", {
-            detail: { draftName, id }
-        });
-        this.dispatchEvent(nameFocusLost);
-    }
+    //     console.log(event);
+    // }
+
+    // nameFocusLostMessage(event) {//позже объеденить nameFocusLost и ratingFocusLost в одну функцию draftValuesMessage
+        // let draftName = this.template.querySelector('.inputfield').value;
+        // console.log("отправляемое значение Драфта имени - " + draftName);
+        // let id = this.throwId;
+        // console.log("отправляемое значение Id  - " + id);
+        // const nameFocusLost = new CustomEvent("namefocuslost", {
+        //     detail: { draftName, id }
+        // });
+        // this.dispatchEvent(nameFocusLost);
+    // }
 
     @api carryChangesInNameCell() {
-        this.throwName = this.template.querySelector('.inputfield').value;
+        console.log("carryChangesInNameCell Started");
+        let tempNameVar = this.template.querySelector('.inputfield').value; // потому что пока editNameButtonClicked = true - throwName'a не существует
         this.changeBackgroundColor();
         this.editNameButtonClicked = false; // hide Name input, show Name text
-        this.openFooterMessage();
+        this.throwName = tempNameVar;
     }
     // --  
 
     // R A T I N G //
     handleEditRating() {
-        this.throwRating === undefined ? this.tempVarRating = "" : this.tempVarRating = this.throwRating;
+        // this.throwRating === undefined ? this.tempVarRating = "" : this.tempVarRating = this.throwRating;
         this.editRatingButtonClicked = true; // show rating select, hide rating text
         this.unableButtonsMessage();
     }
 
-    handleLoseRatingFocus() {   //обработчик клика в пустое место от рейтинга
-        console.log("focus lost");
-        this.ratingFocusLostMessage();
+    //создаём метод который будет обработчиком для 2х ивентов: потери фокуса на рейтинге и на имени. ну ты понял 
+    // U N I V E R S A L // 
+    handleFocusLost(event) {
+        let draft;
+        // console.log("отправляемое значение Id  - " + id);
+        this.editRatingButtonClicked ? (
+            draft = this.template.querySelector('.select').value
+        ):(
+            draft = this.template.querySelector('.inputfield').value
+        ) 
+
+        const FocusLost = new CustomEvent("focuslost", {
+            detail: { "draft":draft, "id":this.throwId, "editRatingButtonClicked":this.editRatingButtonClicked}
+        });
+        this.dispatchEvent(FocusLost);
     }
 
-    ratingFocusLostMessage() { // передаём значение изменения
-        let draftRating = this.template.querySelector('.select').value;
-        console.log("отправляемое значение Драфта - " + draftRating);
-        let id = this.throwId;
-        console.log("отправляемое значение Id  - " + id);
-        const ratingFocusLost = new CustomEvent("ratingfocuslost", {
-            detail: { draftRating, id }
-        });
-        this.dispatchEvent(ratingFocusLost);
-    }
+
+    // handleLoseRatingFocus(event) {
+    //     // console.log("event.composedPath()" + event.composedPath());
+
+    //     console.log("EVENT TARGET");
+    //     console.log(event.target.nodeName);
+    //     this.ratingFocusLostMessage();
+    // }
+
+    // ratingFocusLostMessage() { // передаём значение изменения
+    //     let draftRating = this.template.querySelector('.select').value;
+    //     console.log("отправляемое значение Драфта - " + draftRating);
+    //     let id = this.throwId;
+    //     console.log("отправляемое значение Id  - " + id);
+    //     const ratingFocusLost = new CustomEvent("ratingfocuslost", {
+    //         detail: { draftRating, id }
+    //     });
+    //     this.dispatchEvent(ratingFocusLost);
+    // }
 
     @api carryChangesInRatingCell() {
         console.log("carryChangesInRatingCell Started");
-       
         let tempRatingVar = this.template.querySelector('.select').value; // потому что пока editRatingButtonClicked = true - throwRating'a не существует
         this.changeBackgroundColor();
         this.editRatingButtonClicked = false;
         this.throwRating = tempRatingVar; //а вот теперь существует
-        this.openFooterMessage();
+        // this.openFooterMessage();
     }
     // R A T I N G //
 
@@ -156,7 +177,7 @@ export default class Row extends LightningElement {
     // F O O T E R //
 
     // F O O T E R  C A N C E L //
-    @api cancel() {
+    // @api cancel() {
         // console.log("TempVar value = " + this.tempVarRating);
         // console.log("throwRating value before cancel = " + this.throwRating);
 
@@ -171,7 +192,7 @@ export default class Row extends LightningElement {
         //     variant: "info",
         // });
         // this.dispatchEvent(toastMessage);
-    }
+    // }
 
 
 

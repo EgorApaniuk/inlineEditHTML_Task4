@@ -16,10 +16,12 @@ export default class TableInlineEditHTML extends LightningElement {
     @track data;
     dataArray; // 
     refreshAccounts;
-    draftRatingVar;
-    draftNameVar;
+    // draftRatingVar;
+    // draftNameVar;
     receivedId;
     indexVar;
+    draftVar;
+    workingWithRating;
 
     @wire (getAccounts)
     wiredAccounts(value){
@@ -57,25 +59,41 @@ export default class TableInlineEditHTML extends LightningElement {
         this.openFooter = true;
     }
 
-    draftRatingToVar(event){// receiving draftValues from child
-        this.draftRatingVar = event.detail.draftRating;
+    // U N I V E R S A L
+    draftToVar(event){// receiving draftValues from child
+
+        // console.log("event.composedPath()" + event.composedPath());
+        this.draftVar = event.detail.draft;
         this.receivedId = event.detail.id;
-        console.log("id received: "+this.receivedId);
-        console.log("rating draft value received : "+this.draftRatingVar);
+        this.workingWithRating = event.detail.editRatingButtonClicked;
+        console.log("id received: " + this.receivedId);
+        console.log("draft value received : " + this.draftVar);
+        console.log("event.detail.editRatingButtonClicked " + this.workingWithRating);
+
         this.indexFind();
-        console.log("indexVar : "+this.indexVar);
-        this.checkRating();     //checking changes in rating
+        this.workingWithRating ? this.checkRating() : this.checkName();
     }
 
-    draftNameToVar(event){
-        this.draftNameVar = event.detail.draftName;
-        this.receivedId = event.detail.id;
-        console.log("id received : "+this.receivedId);
-        console.log("name draft value received :"+this.draftNameVar);
-        this.indexFind(); // looking for array index, which stores object w/ received id
-        console.log("indexVar : "+this.indexVar);
-        this.checkName();   //checking changes in name // инфа от кэпа 
-    }
+
+    // draftRatingToVar(event){// receiving draftValues from child
+    //     this.draftRatingVar = event.detail.draft;
+    //     this.receivedId = event.detail.id;
+    //     console.log("id received: "+this.receivedId);
+    //     console.log("rating draft value received : "+this.draftRatingVar);
+    //     this.indexFind();
+    //     console.log("indexVar : "+this.indexVar);
+    //     this.checkRating();     //checking changes in rating
+    // }
+
+    // draftNameToVar(event){
+    //     this.draftNameVar = event.detail.draft;
+    //     this.receivedId = event.detail.id;
+    //     console.log("id received : "+this.receivedId);
+    //     console.log("name draft value received :"+this.draftNameVar);
+    //     this.indexFind(); // looking for array index, which stores object w/ received id
+    //     console.log("indexVar : "+this.indexVar);
+    //     this.checkName();   //checking changes in name // инфа от кэпа 
+    // }
 
     indexFind(){
         // console.log(this.receivedId);
@@ -88,25 +106,31 @@ export default class TableInlineEditHTML extends LightningElement {
 
     checkName(){
         console.log("check name");
-        // if(this.draftValues != this.account.Name){
-        //     console.log("There are changes in NAME");
-        //     this.template.querySelector('c-row').carryChangesInNameCell();
-        // }
-        // else{
-        //     console.log("NO changes in NAME");
-        //     this.template.querySelector('c-row').editNameButtonClicked = false;
-        //     this.handleEnableButtons(); 
-        // }
+        console.log("this.draftNameVar " + this.draftVar );
+        console.log("this.dataArray[this.indexVar].Name "+this.dataArray[this.indexVar].Name);
+        
+        if(this.draftVar != this.dataArray[this.indexVar].Name){
+            console.log("There are changes in NAME");
+            this.template.querySelector('[data-id=\'' +this.receivedId +'\']').carryChangesInNameCell();
+            this.openFooter = true;
+        }
+        else{
+            console.log("NO changes in NAME");
+            this.template.querySelector('[data-id=\'' +this.receivedId +'\']').editNameButtonClicked = false;
+            this.handleEnableButtons(); 
+        }
     }
 
     checkRating(){
         console.log("check rating");
-        if(this.draftRatingVar != this.dataArray[this.indexVar].Rating){            
+        if(this.draftVar != this.dataArray[this.indexVar].Rating){   
+            console.log("There are changes in rating");         
             // console.log('[data-id=\'' +this.receivedId +'\']');
             // console.log(this.template.querySelector('[data-id=\'' +this.receivedId +'\']')); // всё просто на самом делеаааааааааааа
             this.template.querySelector('[data-id=\'' +this.receivedId +'\']').carryChangesInRatingCell();
+            this.openFooter = true;
         }
-        else{
+        else{// console.log("There are NO changes in rating");         
             this.template.querySelector('[data-id=\'' +this.receivedId +'\']').editRatingButtonClicked = false;// hide rating select, show rating text
             this.handleEnableButtons(); 
         }
@@ -116,10 +140,13 @@ export default class TableInlineEditHTML extends LightningElement {
         console.log("cancel pushed");
         this.openFooter = false;
         this.handleEnableButtons();
-        this.draftNameVar = [];
-        this.draftRatingVar = [];
+        // this.draftNameVar = [];
+        // this.draftRatingVar = [];
+        this.draftVar = [];
         // console.log(Array.from(this.template.querySelector("tbody").children).find((row)=>row.dataset.id==this.receivedId));
+        // this.template.querySelectorAll('c-row').editRatingButtonClicked=false;
         this.template.querySelector('[data-id=\''+this.receivedId+'\']').throwRating = this.dataArray[this.indexVar].Rating;
+        this.template.querySelector('[data-id=\''+this.receivedId+'\']').throwName = this.dataArray[this.indexVar].Name;
         this.template.querySelector('[data-id=\''+this.receivedId+'\']').changeBackgroundColorToDefault();
     } 
 
@@ -128,8 +155,7 @@ export default class TableInlineEditHTML extends LightningElement {
 
         const fields = {};
         fields[ID_FIELD.fieldApiName] = this.receivedId;
-        // fields["Name"] = event.detail.draftValues[0].Name;
-        fields[RATING_FIELD.fieldApiName] = this.draftRatingVar;
+        this.workingWithRating ? fields[RATING_FIELD.fieldApiName] = this.draftVar : fields[NAME_FIELD.fieldApiName] = this.draftVar;
 
         const recordInput = { fields };
 
@@ -138,7 +164,7 @@ export default class TableInlineEditHTML extends LightningElement {
                 this.dispatchEvent(
                     new ShowToastEvent({
                         title: 'Success',
-                        message: 'Updated successfully',
+                        message: 'Saved successfully',
                         variant: 'success'
                     })
                 )
