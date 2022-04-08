@@ -2,13 +2,6 @@
 :host{
     display:table-row
 }
-/* table {
-    margin: 10px;      
-    width: 50%;
-    border: 2px solid #cfcfcf;
-    background-color: #efefef;
- }
-  */
 
  /* границы ячеек тела таблицы */
  td {
@@ -22,11 +15,9 @@
 }
 
 td:hover{
-   border: solid 2px rgb(105, 105, 105);
+   border: solid 1px rgb(105, 105, 105);
 }
-/* .namefield{
 
-} */
 .editNameButton{
    opacity: 0;
    margin-left: auto;
