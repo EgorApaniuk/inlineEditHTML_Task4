@@ -23,6 +23,8 @@ export default class TableInlineEditHTML extends LightningElement {
     draftVar;
     workingWithRating;
 
+    prikol;
+
     @wire (getAccounts)
     wiredAccounts(value){
         this.refreshAccounts = value;
@@ -123,6 +125,9 @@ export default class TableInlineEditHTML extends LightningElement {
 
     checkRating(){
         console.log("check rating");
+        console.log("полученные значения : " + this.draftVar);
+        console.log("стартовые значения : " + this.dataArray[this.indexVar].Rating);
+
         if(this.draftVar != this.dataArray[this.indexVar].Rating){   
             console.log("There are changes in rating");         
             // console.log('[data-id=\'' +this.receivedId +'\']');
@@ -140,8 +145,6 @@ export default class TableInlineEditHTML extends LightningElement {
         console.log("cancel pushed");
         this.openFooter = false;
         this.handleEnableButtons();
-        // this.draftNameVar = [];
-        // this.draftRatingVar = [];
         this.draftVar = [];
         // console.log(Array.from(this.template.querySelector("tbody").children).find((row)=>row.dataset.id==this.receivedId));
         // this.template.querySelectorAll('c-row').editRatingButtonClicked=false;
@@ -155,8 +158,16 @@ export default class TableInlineEditHTML extends LightningElement {
 
         const fields = {};
         fields[ID_FIELD.fieldApiName] = this.receivedId;
-        this.workingWithRating ? fields[RATING_FIELD.fieldApiName] = this.draftVar : fields[NAME_FIELD.fieldApiName] = this.draftVar;
-
+        if(this.workingWithRating){
+            console.log("сохраняем Рейтинг");
+            fields[RATING_FIELD.fieldApiName] = this.draftVar;
+            console.log("sohranili osnovu");
+            this.prikol = this.draftVar;
+            console.log("sohranili prikol");
+        }
+        else{
+           fields[NAME_FIELD.fieldApiName] = this.draftVar;
+        }
         const recordInput = { fields };
 
         updateRecord(recordInput)
