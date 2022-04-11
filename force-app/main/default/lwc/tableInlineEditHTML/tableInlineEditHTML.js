@@ -53,8 +53,6 @@ export default class TableInlineEditHTML extends LightningElement {
         this.draftVar = event.detail.draft;
         this.receivedId = event.detail.id;
         this.workingWithRating = event.detail.editRatingButtonClicked;
-        console.log(this.draftVar, this.receivedId, this.workingWithRating);
-        // this.draftVar == "" ? this.draftVar = undefined : null;
         this.indexFind();
         this.workingWithRating ? this.checkRating() : this.checkName();
     }
@@ -87,17 +85,11 @@ export default class TableInlineEditHTML extends LightningElement {
     }
 
     handleCancel() {
-        console.log("cancel pushed");
         this.openFooter = false;
-        console.log("openFooter "+ this.openFooter);
-
         this.handleEnableButtons();
-        console.log("buttons enabled");
-
         this.draftVar = [];
         this.workingWithRating ? (
             this.template.querySelector('[data-id=\'' + this.receivedId + '\']').throwRating = this.dataArray[this.indexVar].Rating
-            
         ) : (
             this.template.querySelector('[data-id=\'' + this.receivedId + '\']').throwName = this.dataArray[this.indexVar].Name
         );
@@ -116,9 +108,7 @@ export default class TableInlineEditHTML extends LightningElement {
     handleSave() {
         const fields = {};
         fields[ID_FIELD.fieldApiName] = this.receivedId;
-        console.log("saving. working with rating? " + this.workingWithRating);
         this.workingWithRating ? fields[RATING_FIELD.fieldApiName] = this.draftVar : fields[NAME_FIELD.fieldApiName] = this.draftVar;
-        console.log("input to fields complete");
         const recordInput = { fields };
 
         updateRecord(recordInput)
@@ -131,7 +121,6 @@ export default class TableInlineEditHTML extends LightningElement {
                     })
                 )
                 this.handleRefreshTable();
-                console.log("table refreshed");
             }).
             catch(error => {
                 this.dispatchEvent(

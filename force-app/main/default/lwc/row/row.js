@@ -11,12 +11,12 @@ export default class Row extends LightningElement {
     @api editNameButtonClicked = false;        
 
     renderedCallback() {
-        // if (this.template.querySelector('.select')){
+        // if (this.template.querySelector('.select')) {
         //     this.template.querySelector('.select').value = this.throwRating;
         // }
         this.template.querySelector('.select') ? this.template.querySelector('.select').value = this.throwRating : null;
         this.template.querySelector('.inputfield') ? this.template.querySelector('.inputfield').value = this.throwName : null;
-        // для того, чтобы select рейтинга и inputfield имени не были пустыми при появлении
+        // fullfilling select & inputfield on render
     }
 
     unableButtonsMessage() {
@@ -98,7 +98,6 @@ export default class Row extends LightningElement {
     }
 
     @api carryChangesInRatingCell() {
-        console.log("carryChangesInRatingCell Started");
         let tempRatingVar = this.template.querySelector('.select').value; // потому что пока editRatingButtonClicked = true - throwRating'a не существует
         this.changeBackgroundColor();
         this.editRatingButtonClicked = false;
@@ -106,12 +105,10 @@ export default class Row extends LightningElement {
     }
 
     changeBackgroundColor() {
-        console.log(this.editRatingButtonClicked);
         if (this.editRatingButtonClicked) {
             this.template.querySelector(".fieldrating").classList.toggle("input-changed", false);   // красим рейтинг 
             this.template.querySelector(".fieldrating").classList.toggle("yellow-cell", true);
-        }
-        else {
+        } else {
             this.template.querySelector(".fieldname").classList.toggle("input-changed", false);     // красим имя
             this.template.querySelector(".fieldname").classList.toggle("yellow-cell", true);
         }
