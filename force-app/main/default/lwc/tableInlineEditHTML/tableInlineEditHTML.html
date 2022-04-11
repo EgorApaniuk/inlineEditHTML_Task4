@@ -8,18 +8,15 @@
 
         <tbody>
             <template for:each={data} for:item="account">
-
                 <c-row onrefreshtable={handleRefreshTable} onunablebuttonsevent={handleUnableButtons}
                     onfocuslost={draftToVar} data-id={account.Id} key={account.Id} throw-id={account.Id}
                     throw-name={account.Name} throw-rating={account.Rating}>
                 </c-row>
-
             </template>
         </tbody>
     </table>
 
     <template if:true={openFooter}>
-
         <footer class="slds-modal__footer">
             <button class="slds-button slds-button_neutral" onclick={handleCancel}>
                 Cancel

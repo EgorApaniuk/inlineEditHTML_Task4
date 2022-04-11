@@ -24,6 +24,13 @@ export default class Row extends LightningElement {
         this.dispatchEvent(unableButtonsEvent);
     }
 
+    @api enableButtons() {
+        let editNameButton = this.template.querySelector('.editNameButton');
+        let editRatingButton = this.template.querySelector('.editRatingButton');
+        editNameButton.removeAttribute('disabled');
+        editRatingButton.removeAttribute('disabled');
+    }
+
     @api unableButtons() {
         let editNameButton = this.template.querySelector('.editNameButton');
         let editRatingButton = this.template.querySelector('.editRatingButton');
@@ -80,9 +87,9 @@ export default class Row extends LightningElement {
 
     @api carryChangesInNameCell() {
         let tempNameVar = this.template.querySelector('.inputfield').value; // потому что пока editNameButtonClicked = true - throwName'a не существует
+        this.changeBackgroundColor();
         this.editNameButtonClicked = false; // hide Name input, show Name text
         this.throwName = tempNameVar;
-        this.changeBackgroundColor();
     }
 
     handleEditRating() {
@@ -93,9 +100,9 @@ export default class Row extends LightningElement {
     @api carryChangesInRatingCell() {
         console.log("carryChangesInRatingCell Started");
         let tempRatingVar = this.template.querySelector('.select').value; // потому что пока editRatingButtonClicked = true - throwRating'a не существует
+        this.changeBackgroundColor();
         this.editRatingButtonClicked = false;
         this.throwRating = tempRatingVar; //а вот теперь существует
-        this.changeBackgroundColor();
     }
 
     changeBackgroundColor() {
