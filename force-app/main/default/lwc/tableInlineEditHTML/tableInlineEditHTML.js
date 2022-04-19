@@ -2,14 +2,13 @@ import { LightningElement, wire, track } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { refreshApex } from '@salesforce/apex';
 import { updateRecord } from 'lightning/uiRecordApi';
-
 import ID_FIELD from '@salesforce/schema/Account.Id';
 import RATING_FIELD from '@salesforce/schema/Account.Rating';
 import NAME_FIELD from '@salesforce/schema/Account.Name';
-
 import getAccounts from '@salesforce/apex/AccountController.getAccounts';
 
 export default class TableInlineEditHTML extends LightningElement {
+    
     @track data;
     openFooter = false;
     dataArray;
@@ -36,14 +35,14 @@ export default class TableInlineEditHTML extends LightningElement {
     }
 
     handleUnableButtons() {
-        let allRows = this.template.querySelectorAll("c-row");
+        let allRows = this.template.querySelectorAll('c-row');
         allRows.forEach(function (item, i, allRows) {
             item.unableButtons();
         });
     }
 
     handleEnableButtons() {
-        let allRows = this.template.querySelectorAll("c-row");
+        let allRows = this.template.querySelectorAll('c-row');
         allRows.forEach(function (item, i, allRows) {
             item.enableButtons();
         });
@@ -75,7 +74,7 @@ export default class TableInlineEditHTML extends LightningElement {
 
     checkRating() {
         if (this.draftVar == this.dataArray[this.indexVar].Rating                               // NO changes in rating  
-            || (this.dataArray[this.indexVar].Rating == undefined && this.draftVar == "")) {    // or change from None to None     
+            || (this.dataArray[this.indexVar].Rating == undefined && this.draftVar == '')) {    // or change from None to None     
             this.template.querySelector('[data-id=\'' + this.receivedId + '\']').editRatingButtonClicked = false;// hide rating select, show rating text
             this.handleEnableButtons();
         } else {   //There are changes in rating         
@@ -89,9 +88,9 @@ export default class TableInlineEditHTML extends LightningElement {
         this.handleEnableButtons();
         this.draftVar = [];
         this.workingWithRating ? (
-            this.template.querySelector('[data-id=\'' + this.receivedId + '\']').throwRating = this.dataArray[this.indexVar].Rating
+            this.template.querySelector('[data-id=\'' + this.receivedId + '\']').showRating = this.dataArray[this.indexVar].Rating
         ) : (
-            this.template.querySelector('[data-id=\'' + this.receivedId + '\']').throwName = this.dataArray[this.indexVar].Name
+            this.template.querySelector('[data-id=\'' + this.receivedId + '\']').showName = this.dataArray[this.indexVar].Name
         );
 
         this.template.querySelector('[data-id=\'' + this.receivedId + '\']').changeBackgroundColorToDefault();
@@ -135,11 +134,4 @@ export default class TableInlineEditHTML extends LightningElement {
         this.openFooter = false;
         this.handleEnableButtons();
     }
-
-    // indexFind(){
-    //         let index = this.dataArray.findIndex((array) => {
-    //             return array.Id == this.receivedId;
-    //         });
-    //         this.indexVar  = index;
-    //     }
 }

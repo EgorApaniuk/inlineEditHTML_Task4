@@ -3,7 +3,7 @@
 
     <td class="fieldname">
         <template if:false={editNameButtonClicked}>
-            <div class="name">{throwName}</div>
+            <div class="name"> {showName} </div>
         </template>
 
         <template if:true={editNameButtonClicked}>
@@ -11,14 +11,15 @@
         </template>
         
         <button onclick={handleEditName} class="editNameButton" name="edit" value="edit">
-            <img width="20" src="https://cdn.pixabay.com/photo/2017/06/06/00/33/edit-icon-2375785_1280.png" />
+            <lightning-icon icon-name="utility:edit" size="x-small" alternative-text="edit" title="edit">
+            </lightning-icon>
         </button>
     </td>
 
 
     <td class="fieldrating">
         <template if:false={editRatingButtonClicked}>
-            <div class="rating">{throwRating}</div>
+            <div class="rating"> {showRating} </div>
         </template>
 
         <template if:true={editRatingButtonClicked}>
@@ -31,7 +32,8 @@
         </template>
 
         <button name="edit" value="edit" class="editRatingButton" onclick={handleEditRating}>
-            <img width="20" src="https://cdn.pixabay.com/photo/2017/06/06/00/33/edit-icon-2375785_1280.png" />
+            <lightning-icon icon-name="utility:edit" size="x-small" alternative-text="edit" title="edit">
+            </lightning-icon>
         </button>
     </td>
 
@@ -39,7 +41,7 @@
     <td>
         <div>
             <lightning-button-icon onclick={handleDeleteRow} icon-name="utility:delete" alternative-text="Delete"
-                title="Delete" data-acc-id={throwId} data-test="test"></lightning-button-icon>
+                title="Delete" data-acc-id={showId} data-test="test"></lightning-button-icon>
         </div>
     </td>
 </template>

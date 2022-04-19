@@ -2,13 +2,12 @@ table {
     margin: 10px;      
     border: 2px solid #cfcfcf;
     background-color: #efefef;
- }
- /* границы ячеек первого ряда таблицы */
- th {
-    border: 1px solid #000000;
- }
+}
 
-/* изменение цвета при наведении на ячейку */
-  .model_table tr:hover {
-    background-color: #cfcfcf;
+th {
+   border: 1px solid #000000;
+}
+
+.model_table tr:hover {
+   background-color: #cfcfcf;
 }

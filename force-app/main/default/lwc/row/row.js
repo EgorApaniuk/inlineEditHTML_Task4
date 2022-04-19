@@ -2,25 +2,21 @@ import { LightningElement, api } from 'lwc';
 import deleteAccount from '@salesforce/apex/accountController.deleteAccount';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
-
 export default class Row extends LightningElement {
-    @api throwId;
-    @api throwRating;
-    @api throwName;
+    @api showId;
+    @api showRating;
+    @api showName;
     @api editRatingButtonClicked = false;
     @api editNameButtonClicked = false;        
 
     renderedCallback() {
-        // if (this.template.querySelector('.select')) {
-        //     this.template.querySelector('.select').value = this.throwRating;
-        // }
-        this.template.querySelector('.select') ? this.template.querySelector('.select').value = this.throwRating : null;
-        this.template.querySelector('.inputfield') ? this.template.querySelector('.inputfield').value = this.throwName : null;
+        this.template.querySelector('.select') ? this.template.querySelector('.select').value = this.showRating : null;
+        this.template.querySelector('.inputfield') ? this.template.querySelector('.inputfield').value = this.showName : null;
         // fullfilling select & inputfield on render
     }
 
     unableButtonsMessage() {
-        const unableButtonsEvent = new CustomEvent("unablebuttonsevent");
+        const unableButtonsEvent = new CustomEvent('unablebuttonsevent');
         this.dispatchEvent(unableButtonsEvent);
     }
 
@@ -39,7 +35,7 @@ export default class Row extends LightningElement {
     }
 
     refreshTable() {
-        const updateEvent = new CustomEvent("refreshtable");
+        const updateEvent = new CustomEvent('refreshtable');
         this.dispatchEvent(updateEvent);
     }
 
@@ -74,8 +70,8 @@ export default class Row extends LightningElement {
             draft = this.template.querySelector('.inputfield').value
         ) 
 
-        const focusLost = new CustomEvent("focuslost", {
-            detail: { "draft":draft, "id":this.throwId, "editRatingButtonClicked":this.editRatingButtonClicked}
+        const focusLost = new CustomEvent('focuslost', {
+            detail: { 'draft':draft, 'id':this.showId, 'editRatingButtonClicked':this.editRatingButtonClicked}
         });
         this.dispatchEvent(focusLost);
     }
@@ -86,10 +82,10 @@ export default class Row extends LightningElement {
     }
 
     @api carryChangesInNameCell() {
-        let tempNameVar = this.template.querySelector('.inputfield').value; // потому что пока editNameButtonClicked = true - throwName'a не существует
+        let tempNameVar = this.template.querySelector('.inputfield').value; 
         this.changeBackgroundColor();
         this.editNameButtonClicked = false; // hide Name input, show Name text
-        this.throwName = tempNameVar;
+        this.showName = tempNameVar;
     }
 
     handleEditRating() {
@@ -98,24 +94,24 @@ export default class Row extends LightningElement {
     }
 
     @api carryChangesInRatingCell() {
-        let tempRatingVar = this.template.querySelector('.select').value; // потому что пока editRatingButtonClicked = true - throwRating'a не существует
+        let tempRatingVar = this.template.querySelector('.select').value;
         this.changeBackgroundColor();
         this.editRatingButtonClicked = false;
-        this.throwRating = tempRatingVar; //а вот теперь существует
+        this.showRating = tempRatingVar; 
     }
 
     changeBackgroundColor() {
         if (this.editRatingButtonClicked) {
-            this.template.querySelector(".fieldrating").classList.toggle("input-changed", false);   // красим рейтинг 
-            this.template.querySelector(".fieldrating").classList.toggle("yellow-cell", true);
+            this.template.querySelector('.fieldrating').classList.toggle('input-changed', false);   // painting rating 
+            this.template.querySelector('.fieldrating').classList.toggle('yellow-cell', true);
         } else {
-            this.template.querySelector(".fieldname").classList.toggle("input-changed", false);     // красим имя
-            this.template.querySelector(".fieldname").classList.toggle("yellow-cell", true);
+            this.template.querySelector('.fieldname').classList.toggle('input-changed', false);     // painting name
+            this.template.querySelector('.fieldname').classList.toggle('yellow-cell', true);
         }
     }
 
     @api changeBackgroundColorToDefault() {
-        this.template.querySelector(".fieldrating").classList.toggle("input-changed", true);
-        this.template.querySelector(".fieldname").classList.toggle("input-changed", true);
+        this.template.querySelector('.fieldrating').classList.toggle('input-changed', true);
+        this.template.querySelector('.fieldname').classList.toggle('input-changed', true);
     }
 }
