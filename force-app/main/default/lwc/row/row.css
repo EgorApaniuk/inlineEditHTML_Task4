@@ -13,11 +13,11 @@ td {   /* borders of tble body */
     background-color: #cfcfcf;
 }
 
-td:hover{
+td:hover {
    border: solid 1px rgb(105, 105, 105);
 }
 
-.editNameButton{
+.editNameButton {
    opacity: 0;
    margin-left: auto;
    position: absolute;
